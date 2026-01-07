@@ -1,0 +1,59 @@
+/* About Section Redesign */
+.about-section {
+  background-color: var(--white);
+}
+
+.about-container {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.about-image {
+  flex: 1;
+  position: relative;
+}
+
+.about-image img {
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+
+/* .about-image:hover img {
+  transform: scale(1.02);
+} */
+
+.about-content {
+  flex: 1;
+}
+
+.benefits-list {
+  margin: 1.5rem 0;
+}
+
+.benefits-list li {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+.benefits-list i {
+  color: var(--success);
+  font-size: 1.25rem;
+}
+
+/* Responsive for About */
+@media (max-width: 768px) {
+  .about-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .about-image {
+    order: -1; /* Image on top on mobile */
+  }
+}

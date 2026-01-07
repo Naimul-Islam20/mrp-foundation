@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ডিলার আবেদন - MRP Foundation</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/animation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .page-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            margin-top: -3rem;
+            position: relative;
+            z-index: 10;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(99, 187, 71, 0.2);
+        }
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        .form-control.error {
+            border-color: var(--error);
+        }
+        .form-control.error + .error-message {
+            display: block;
+        }
+
+        /* Success Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .success-modal {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .modal-overlay.active .success-modal {
+            transform: scale(1);
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #dcfce7;
+            color: #16a34a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s backwards;
+        }
+        @keyframes popIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        .success-modal h3 {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        .success-modal p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        .btn-success {
+            background: var(--secondary-color);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-success:hover {
+            background: var(--secondary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Custom Beautiful Checkbox */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            gap: 12px;
+            position: relative;
+            padding: 10px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        .checkbox-wrapper:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        .checkbox-wrapper input {
+            display: none; /* Hide default checkbox */
+        }
+        .custom-check {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            background: #fff;
+            position: relative;
+            margin-top: 2px;
+        }
+        .checkbox-wrapper input:checked + .custom-check {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 6px -1px rgba(99, 187, 71, 0.4);
+            transform: scale(1.05);
+        }
+        .custom-check::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: white;
+            font-size: 14px;
+            display: none;
+        }
+        .checkbox-wrapper input:checked + .custom-check::after {
+            display: block;
+        }
+        .label-text {
+            font-size: 1rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/preview.png" alt="MRP Foundation">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">হোম</a></li>
+                <li class="nav-item"><a href="dealer-requirements.html" class="nav-link">যোগ্যতা সমূহ</a></li>
+                <li class="nav-item"><a href="index.html#about" class="nav-link">আমাদের সম্পর্কে</a></li>
+                <li class="nav-item"><a href="index.html#contact" class="nav-link">যোগাযোগ</a></li>
+                <li class="nav-item">
+                    <a href="become-dealer.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">ডিলার হোন</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="reveal-text">ডিলার রেজিস্ট্রেশন</h1>
+            <p class="reveal-text delay-100">আমাদের নেটওয়ার্কে যুক্ত হতে নিচের ফর্মটি পূরণ করুন</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="form-container reveal-text delay-200">
+                <form id="dealerForm" novalidate>
+                    <!-- Personal Info -->
+
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">পূর্ণ নাম <span style="color: red;">*</span></label>
+                        <input type="text" id="fullName" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
+                        <div class="error-message">দয়া করে আপনার পূর্ণ নাম লিখুন।</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobile" class="form-label">মোবাইল নম্বর <span style="color: red;">*</span></label>
+                        <input type="tel" id="mobile" class="form-control" placeholder="01XXXXXXXXX" required pattern="[0-9]{11}">
+                        <div class="error-message">সঠিক মোবাইল নম্বর প্রদান করুন (১১ ডিজিট)।</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">ইমেইল ঠিকানা <span style="color: red;">*</span></label>
+                        <input type="email" id="email" class="form-control" placeholder="example@email.com" required>
+                        <div class="error-message">সঠিক ইমেইল ঠিকানা প্রদান করুন।</div>
+                    </div>
+
+                    <!-- Business Info -->
+
+                    <div class="form-group">
+                        <label for="businessName" class="form-label">ব্যবসা / দোকানের নাম <span style="color: red;">*</span></label>
+                        <input type="text" id="businessName" class="form-control" placeholder="আপনার প্রতিষ্ঠানের নাম" required>
+                        <div class="error-message">দয়া করে ব্যবসার নাম লিখুন।</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="businessType" class="form-label">ব্যবসার ধরন <span style="color: red;">*</span></label>
+                        <select id="businessType" class="form-control" required style="cursor: pointer;">
+                            <option value="">নির্বাচন করুন...</option>
+                            <option value="retail">খুচরা (Retail)</option>
+                            <option value="wholesale">পাইকারি (Wholesale)</option>
+                            <option value="online">অনলাইন (Online)</option>
+                            <option value="other">অন্যান্য (Other)</option>
+                        </select>
+                        <div class="error-message">দয়া করে ব্যবসার ধরন নির্বাচন করুন।</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="businessYears" class="form-label">কত বছর ধরে ব্যবসা করছেন? <span style="color: red;">*</span></label>
+                        <input type="number" id="businessYears" class="form-control" placeholder="উদাহরণ: 5" min="0" required>
+                        <div class="error-message">দয়া করে ব্যবসার সময়কাল উল্লেখ করুন।</div>
+                    </div>
+
+                    <!-- Address Info -->
+
+                    <div class="form-group">
+                        <label for="address" class="form-label">সম্পূর্ণ ঠিকানা <span style="color: red;">*</span></label>
+                        <textarea id="address" class="form-control" rows="2" placeholder="বাড়ি নং, রোড নং, এলাকা..." required></textarea>
+                        <div class="error-message">দয়া করে আপনার ঠিকানা লিখুন।</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="district" class="form-label">জেলা <span style="color: red;">*</span></label>
+                        <input type="text" id="district" class="form-control" placeholder="আপনার জেলার নাম" required>
+                        <div class="error-message">দয়া করে জেলার নাম লিখুন।</div>
+                    </div>
+
+                    <!-- Additional Info -->
+
+                    <div class="form-group">
+                        <label for="nid" class="form-label">জাতীয় পরিচয়পত্র (NID) নম্বর (ঐচ্ছিক)</label>
+                        <input type="text" id="nid" class="form-control" placeholder="NID নম্বর লিখুন">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason" class="form-label">কেন ডিলার হতে চান? <span style="color: red;">*</span></label>
+                        <textarea id="reason" class="form-control" rows="3" placeholder="সংক্ষেপে আপনার কারণ লিখুন..." required></textarea>
+                        <div class="error-message">দয়া করে কারণ উল্লেখ করুন।</div>
+                    </div>
+
+                    <!-- Consent -->
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="consent" required>
+                            <span class="custom-check"></span>
+                            <span class="label-text">আমি নিশ্চিত করছি যে উপরের সকল তথ্য সঠিক এবং আমি কোম্পানির শর্তাবলী মেনে চলতে রাজি আছি।</span>
+                        </label>
+                        <div class="error-message" id="consentError">আবেদন করতে হলে আপনাকে অবশ্যই সম্মতি দিতে হবে।</div>
+                    </div>
+
+                    <div class="text-center mt-2">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">আবেদন জমা দিন</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- About -->
+                <div class="footer-about">
+                    <h3><i class="fas fa-hands-helping"></i> MRP Foundation</h3>
+                    <p>মানবতার সেবায় নিবেদিত একটি প্রতিষ্ঠান। আমরা বিশ্বাস করি একত্রিত প্রচেষ্টাই পারে সমাজকে বদলে দিতে। আমাদের সাথে যুক্ত হয়ে আপনিও অবদান রাখতে পারেন।</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: #a0aec0;"><i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px;"></i> হাউজ #১/এ, রোড #৬, সেক্টর #৩, উত্তরা মডেল টাউন, উত্তরা, ঢাকা-১২৩০</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-widget">
+                    <h4 class="footer-title">প্রয়োজনীয় লিংক</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html"><i class="fas fa-angle-right"></i> হোম</a></li>
+                        <li><a href="index.html#about"><i class="fas fa-angle-right"></i> আমাদের সম্পর্কে</a></li>
+                        <li><a href="index.html#contact"><i class="fas fa-angle-right"></i> যোগাযোগ</a></li>
+                        <li><a href="become-dealer.html"><i class="fas fa-angle-right"></i> ডিলার আবেদন</a></li>
+                        <li><a href="#"><i class="fas fa-angle-right"></i> গোপনীয়তা নীতি</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="footer-widget">
+                    <h4 class="footer-title">আপডেট পেতে</h4>
+                    <p style="color: #a0aec0; margin-bottom: 1rem;">আমাদের সকল কার্যক্রমের আপডেট পেতে আপনার ইমেইল দিয়ে সাবস্ক্রাইব করুন।</p>
+                    <form class="newsletter-form" onsubmit="event.preventDefault();">
+                        <input type="email" class="newsletter-input" placeholder="আপনার ইমেইল লিখুন">
+                        <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 MRP Foundation. সর্বস্বত্ব সংরক্ষিত | কারিগরি সহযোগিতায় <span style="color: var(--secondary-color);">TechTeam</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="success-modal">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3>অভিনন্দন!</h3>
+            <p>আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে।<br>আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।</p>
+            <button class="btn-success" onclick="closeModal()">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Modal Helper Functions
+        const modal = document.getElementById('successModal');
+        
+        function showModal() {
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            // Optional: Redirect or refresh
+            // window.location.href = 'index.html'; 
+        }
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

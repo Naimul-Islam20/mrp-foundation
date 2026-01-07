@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ডিলার যোগ্যতা ও শর্তাবলী - MRP Foundation</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/about.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/animation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 5rem 0;
+            text-align: center;
+            margin-bottom: 4rem;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+        
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 2rem; /* Reduced from 4rem */
+        }
+
+        .req-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .req-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        /* .req-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        } */
+
+        .req-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 1rem;
+        }
+
+        .req-title i {
+            color: var(--secondary-color);
+            background: rgba(99, 187, 71, 0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        .req-list li {
+            position: relative;
+            padding: 12px 15px 12px 40px;
+            margin-bottom: 12px;
+            color: #4b5563;
+            font-size: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            /* Removed transition: var(--transition) to allow animation.css to control entry speed */
+        }
+
+        /* .req-list li:hover {
+            padding-left: 20px; 
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: 0.3s; 
+        } */
+
+        .req-list li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+            /* transition: 0.3s; */
+        }
+        
+        /* .req-list li:hover::before {
+            left: 20px; 
+        } */
+
+        .highlight-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            color: var(--white);
+            position: relative;
+            isolation: isolate;
+        }
+
+        .highlight-box::after {
+            content: '\f508'; /* Users Icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            font-size: 8rem;
+            color: rgba(255,255,255,0.1);
+            z-index: -1;
+            transform: rotate(-15deg);
+        }
+
+        .highlight-title {
+            color: var(--white);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .worker-badge {
+            display: inline-block;
+            background-color: rgba(255,255,255,0.2);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/preview.png" alt="MRP Foundation">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">হোম</a></li>
+                <li class="nav-item"><a href="dealer-requirements.html" class="nav-link active">যোগ্যতা সমূহ</a></li>
+                <li class="nav-item"><a href="index.html#contact" class="nav-link">যোগাযোগ</a></li>
+                <li class="nav-item">
+                    <a href="become-dealer.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">ডিলার হোন</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>ডিলার যোগ্যতা ও প্রয়োজনীয় কাগজপত্র</h1>
+            <p>আমাদের নেটওয়ার্কে যুক্ত হওয়ার জন্য প্রয়োজনীয় নির্দেশিকা</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <section class="section" style="padding-top: 0; padding-bottom: 0rem;">
+        <div class="container" style="padding-bottom: 0;">
+            
+            <div class="req-grid reveal-text">
+                <!-- Card 1: Documents -->
+                <!-- Card 1: Documents (কাগজপত্র) -->
+                <div class="req-card reveal-text">
+                    <h3 class="req-title"><i class="fas fa-file-alt"></i> প্রয়োজনীয় কাগজপত্র</h3>
+                    <ul class="req-list">
+                        <li class="reveal-text">জন্ম সনদ</li>
+                        <li class="reveal-text">NID কার্ডের ফটোকপি</li>
+                        <li class="reveal-text">ডিলারের দুই কপি পাসপোর্ট সাইজের ছবি</li>
+                        <li class="reveal-text">চেয়ারম্যান সার্টিফিকেট লাগবে</li>
+                        <li class="reveal-text">স্বামীর ছবি ও অন্যান্য ডকুমেন্ট (নারীদের ক্ষেত্রে)</li>
+                        <li class="reveal-text">এলাকার গণ্যমান্য ব্যক্তির স্বাক্ষর করা ফরম লাগবে (প্রতিষ্ঠান থেকে প্রদান করা হবে)</li>
+                        <li class="reveal-text">ব্যাংক চেক লাগবে তিনটা, চুক্তিনামা</li>
+                        <li class="reveal-text">ট্রেড লাইসেন্স থাকতে হবে</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Qualifications (যোগ্যতা সমূহ) -->
+                <div class="req-card reveal-text delay-200">
+                    <h3 class="req-title"><i class="fas fa-user-check"></i> যোগ্যতা ও শর্তাবলী</h3>
+                    <ul class="req-list">
+                        <li class="reveal-text">SSC পাশ হতে হবে</li>
+                        <li class="reveal-text">মানবিক ও সহানুভূতিশীল মানুষ হতে হবে</li>
+                        <li class="reveal-text">পরিশ্রমী ও ধৈর্যশীল হতে হবে</li>
+                        <li class="reveal-text">কার্ডধারী সেবা গ্রহীতা তৈরি করতে হবে</li>
+                    </ul>
+
+                    <div class="highlight-box reveal-text delay-300">
+                        <span class="worker-badge">বিশেষ সুবিধা</span>
+                        <div class="highlight-title">দক্ষ কর্মী নিয়োগ: ২০ জন</div>
+                        <p style="font-size: 0.95rem; color: rgba(255,255,255,0.9);">
+                            দক্ষ কর্মী লাগবে ২০ জন।
+                            <br><strong style="color: #fff;">দ্রষ্টব্য:</strong> যার বেতন ভাতা ও অন্যান্য সুযোগ-সুবিধা সংস্থা বহন করবে।
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center reveal-text delay-300" style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 1.5rem; color: var(--text-dark);">সবকিছু ঠিক আছে?</h3>
+                <a href="become-dealer.html" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.1rem;">
+                    এখনই আবেদন করুন <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- About -->
+                <div class="footer-about">
+                    <h3><i class="fas fa-hands-helping"></i> MRP Foundation</h3>
+                    <p>মানবতার সেবায় নিবেদিত একটি প্রতিষ্ঠান। আমরা বিশ্বাস করি একত্রিত প্রচেষ্টাই পারে সমাজকে বদলে দিতে। আমাদের সাথে যুক্ত হয়ে আপনিও অবদান রাখতে পারেন।</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: #a0aec0;"><i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px;"></i> হাউজ #১/এ, রোড #৬, সেক্টর #৩, উত্তরা মডেল টাউন, উত্তরা, ঢাকা-১২৩০</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-widget">
+                    <h4 class="footer-title">প্রয়োজনীয় লিংক</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html"><i class="fas fa-angle-right"></i> হোম</a></li>
+                        <li><a href="dealer-requirements.html"><i class="fas fa-angle-right"></i> যোগ্যতা সমূহ</a></li>
+                        <li><a href="index.html#contact"><i class="fas fa-angle-right"></i> যোগাযোগ</a></li>
+                        <li><a href="become-dealer.html"><i class="fas fa-angle-right"></i> ডিলার আবেদন</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="footer-widget">
+                    <h4 class="footer-title">আপডেট পেতে</h4>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">আমাদের সকল কার্যক্রমের আপডেট পেতে আপনার ইমেইল দিয়ে সাবস্ক্রাইব করুন।</p>
+                    <form class="newsletter-form" onsubmit="event.preventDefault();">
+                        <input type="email" class="newsletter-input" placeholder="আপনার ইমেইল লিখুন">
+                        <button type="submit" class="newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 MRP Foundation. সর্বস্বত্ব সংরক্ষিত | কারিগরি সহযোগিতায় <span style="color: var(--secondary-color);">TechTeam</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
