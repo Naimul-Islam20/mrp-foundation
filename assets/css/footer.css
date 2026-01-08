@@ -48,13 +48,13 @@
 .social-link {
   width: 40px;
   height: 40px;
-  background-color: rgba(0, 105, 92, 0.1); /* Light green tint */
+  background-color: rgba(99, 187, 71, 0.1); /* Secondary light green tint */
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: var(--transition);
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .social-link:hover {
@@ -152,8 +152,44 @@
 
 /* Responsive */
 @media (max-width: 968px) {
+  .footer {
+    padding-top: 1rem;
+  }
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-about, .footer-widget {
+    text-align: center;
+  }
+
+  .footer-about h3, .footer-title, .social-links, .footer-links a {
+    justify-content: center;
+  }
+
+  .footer-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .newsletter-form {
+    max-width: 400px;
+    margin: 1rem auto 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1rem 0 0;
+  }
+
+  .footer-about h3 {
+    font-size: 1.25rem;
+  }
+
+  .footer-title {
+    font-size: 1.1rem;
   }
 }

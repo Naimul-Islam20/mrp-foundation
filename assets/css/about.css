@@ -33,6 +33,7 @@
 }
 
 .benefits-list li {
+  
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -42,18 +43,33 @@
 }
 
 .benefits-list i {
-  color: var(--success);
+  color: var(--secondary-color);
   font-size: 1.25rem;
 }
 
 /* Responsive for About */
 @media (max-width: 768px) {
+  .about-section {
+    padding: 2rem 0;
+  }
+
   .about-container {
     flex-direction: column;
-    gap: 2rem;
+    gap: 2.5rem;
   }
   
   .about-image {
     order: -1; /* Image on top on mobile */
+    max-width: 100%;
+  }
+
+  .about-content h3 {
+    font-size: 1.4rem;
+    line-height: 1.4;
+  }
+
+  .benefits-list li {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
   }
 }

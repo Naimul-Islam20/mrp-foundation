@@ -4,17 +4,19 @@
 }
 
 .contact-container {
+  background: var(--white);
   display: flex;
-  gap: 3rem;
+  /* gap: 3rem; Removed gap for seamless card look */
   align-items: stretch;
+  box-shadow: var(--shadow-sm);
+  border-radius: 12px;
+  overflow: hidden; /* Ensure map doesn't overflow rounded corners */
 }
 
 .contact-info {
   flex: 1;
-  background: var(--white);
+  /* background: var(--white); Parent handles bg */
   padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
 }
 
 .contact-item {
@@ -31,12 +33,12 @@
 .contact-icon {
   width: 50px;
   height: 50px;
-  background-color: rgba(0, 105, 92, 0.1);
+  background-color: rgba(99, 187, 71, 0.1); /* Secondary color tint */
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--primary-color);
+  color: var(--secondary-color);
   font-size: 1.25rem;
   flex-shrink: 0;
 }
@@ -53,10 +55,10 @@
 
 .contact-map {
   flex: 1;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
+  /* background: var(--white); Parent handles bg */
+  /* padding: 15px; Removed padding so map fills half the card */
   min-height: 400px;
+  position: relative;
 }
 
 .contact-map iframe {
@@ -70,9 +72,24 @@
   .contact-container {
     flex-direction: column;
   }
+
+  .contact-info {
+    padding: 1.5rem;
+  }
+
+  .contact-item {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
   
   .contact-map {
-    height: 300px;
+    height: 250px;
     min-height: auto;
   }
 }

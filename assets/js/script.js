@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
     }
 
+    // Dynamic Year
+    const yearElement = document.getElementById('currentYear');
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    }
+
     // Dealer Form Validation
     const dealerForm = document.getElementById('dealerForm');
     if (dealerForm) {
@@ -172,34 +178,36 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => {
         el.classList.add('reveal-text');
         
-        // Add staggered delays for regular lists
-        if (el.tagName === 'LI') {
-            const index = Array.from(el.parentNode.children).indexOf(el);
-            // Add delay based on index (up to 5 items to keep it reasonable)
-            // delay-100, delay-200, delay-300 etc.
-            if (index < 5) {
+        // Skip automatic delay if manual delay is set in HTML
+        const hasManualDelay = Array.from(el.classList).some(cls => cls.startsWith('delay-'));
+        
+        if (!hasManualDelay) {
+            // Add staggered delays for regular lists
+            if (el.tagName === 'LI') {
+                const index = Array.from(el.parentNode.children).indexOf(el);
+                if (index < 10) {
+                    el.style.transitionDelay = `${(index + 1) * 0.1}s`;
+                }
+            }
+            
+            // Add staggered delays for social links
+            if (el.classList.contains('social-link')) {
+                const index = Array.from(el.parentNode.children).indexOf(el);
                 el.style.transitionDelay = `${(index + 1) * 0.1}s`;
             }
-        }
-        
-        // Add staggered delays for social links
-        if (el.classList.contains('social-link')) {
-            const index = Array.from(el.parentNode.children).indexOf(el);
-            el.style.transitionDelay = `${(index + 1) * 0.1}s`;
-        }
 
-        // Add staggered delays for contact items
-        if (el.classList.contains('contact-item')) {
-            const index = Array.from(el.parentNode.children).indexOf(el);
-            el.style.transitionDelay = `${(index + 1) * 0.1}s`;
-        }
+            // Add staggered delays for contact items
+            if (el.classList.contains('contact-item')) {
+                const index = Array.from(el.parentNode.children).indexOf(el);
+                el.style.transitionDelay = `${(index + 1) * 0.1}s`;
+            }
 
-        // Add staggered delays for Hero and About text content
-        if (el.parentElement.classList.contains('hero-text') || el.parentElement.classList.contains('about-content')) {
-             // Calculate index only among "revealed" siblings or just simple child index
-             // Simple child index is usually fine if they are direct children
-             const index = Array.from(el.parentNode.children).indexOf(el);
-             el.style.transitionDelay = `${(index + 1) * 0.15}s`; // Slightly slower stagger for text blocks
+            // Add staggered delays for Hero and About text content
+            const parent = el.parentElement;
+            if (parent && (parent.classList.contains('hero-text') || parent.classList.contains('about-content'))) {
+                 const index = Array.from(parent.children).indexOf(el);
+                 el.style.transitionDelay = `${(index + 1) * 0.15}s`;
+            }
         }
 
         observer.observe(el);
