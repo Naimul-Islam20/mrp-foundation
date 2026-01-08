@@ -143,7 +143,7 @@ img {
   position: sticky;
   top: 0;
   z-index: 1000;
-  padding: 1rem 0;
+  padding: 0.8rem 0;
   transition: all 0.3s ease;
 }
 
@@ -159,7 +159,7 @@ img {
 }
 
 .logo img {
-  height: 60px;
+  height: 55px;
   width: auto;
   /* Filter to match brand color #469946 */
   filter: invert(49%) sepia(21%) saturate(1008%) hue-rotate(69deg) brightness(94%) contrast(85%);
@@ -749,11 +749,11 @@ img {
   }
 
   .navbar {
-    padding: 0.8rem 0;
+    padding: 0.4rem 0;
   }
 
   .logo img {
-    height: 50px;
+    height: 40px;
   }
 
   .hamburger {
@@ -775,7 +775,7 @@ img {
   .nav-menu {
     position: fixed;
     left: -100%;
-    top: 66px;
+    top: 54px;
     gap: 1.5rem;
     flex-direction: column;
     background-color: var(--white);
@@ -784,7 +784,7 @@ img {
     transition: 0.3s;
     box-shadow: 0 10px 10px rgba(0,0,0,0.1);
     padding: 2rem 0;
-    height: calc(100vh - 66px);
+    height: calc(100vh - 54px);
     overflow-y: auto;
   }
 
