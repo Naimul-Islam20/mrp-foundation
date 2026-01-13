@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইভেন্টের বিস্তারিত - MRP Foundation</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/event.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/animation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .event-detail-hero {
+            height: 60vh;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+        }
+        .event-detail-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        .event-detail-content {
+            position: relative;
+            z-index: 1;
+            color: white;
+            padding: 3rem 0;
+            width: 100%;
+        }
+        .event-detail-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .event-detail-meta-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        .meta-item i {
+            color: var(--secondary-color);
+        }
+        .content-section {
+            padding: 4rem 0;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+        .main-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+        .sidebar-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+            position: sticky;
+            top: 100px;
+        }
+        @media (max-width: 992px) {
+            .content-section { grid-template-columns: 1fr; }
+            .sidebar-card { position: static; margin-top: 2rem; }
+            .event-detail-title { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="MRP Foundation">
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">হোম</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">আমাদের সম্পর্কে <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 4px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="our-inception.html" class="dropdown-item">Our Inception</a></li>
+                        <li><a href="mission-vision.html" class="dropdown-item">Mission and Vision</a></li>
+                        <li><a href="certification.html" class="dropdown-item">Certification</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Media <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 4px;"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="event.html" class="dropdown-item">Event</a></li>
+                        <li><a href="#" class="dropdown-item">News</a></li>
+                        <li><a href="#" class="dropdown-item">Gallery</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="#" class="nav-link">Our Partner</a></li>
+                <li class="nav-item"><a href="career.html" class="nav-link">Career</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Contact Us</a></li>
+                <li class="nav-item"><a href="agent-requirements.html" class="nav-link">যোগ্যতা সমূহ</a></li>
+                <li class="nav-item" style="display: flex; gap: 16px; align-items: center; margin-left: 0.5rem;">
+                    <a href="become-agent.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">এজেন্ট হোন</a>
+                    <a href="become-member.html" class="btn btn-secondary-white active" style="padding: 0.5rem 1rem; font-size: 0.9rem;">সদস্য হোন</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Event Hero -->
+    <div class="event-detail-hero" style="background-image: url('assets/images/event1.jpg');"> <!-- Dynamic Image -->
+        <div class="container event-detail-content">
+            <span style="background: var(--secondary-color); padding: 5px 15px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-bottom: 1rem;">Social Welfare</span>
+            <h1 class="event-detail-title">শীতার্তদের মাঝে বস্ত্র বিতরণ কর্মসূচি ২০২৬</h1>
+            <div class="event-detail-meta-row">
+                <div class="meta-item"><i class="far fa-calendar-alt"></i> ১৫ জানুয়ারি, ২০২৬</div>
+                <div class="meta-item"><i class="far fa-clock"></i> সকাল ১০:০০ টা - বিকাল ৫:০০ টা</div>
+                <div class="meta-item"><i class="fas fa-map-marker-alt"></i> উত্তরা মডেল টাউন, ঢাকা</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container section">
+        <div class="content-section">
+            <div class="main-text">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-dark);">ইভেন্টের বিস্তারিত বর্ণনা</h3>
+                <p style="margin-bottom: 1.5rem;">
+                    তীব্র শীতে জনজীবন যখন বিপর্যস্ত, ঠিক তখনই সমাজের সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াতে এমআরপি ফাউন্ডেশন আয়োজন করেছে "শীতার্তদের মাঝে বস্ত্র বিতরণ কর্মসূচি ২০২৬"। আমাদের লক্ষ্য হলো উত্তরা এবং এর আশেপাশের এলাকার প্রায় ১০০০+ দুস্থ পরিবারের মাঝে শীতবস্ত্র (কম্বল, সোয়েটার) বিতরণ করা।
+                </p>
+                <p style="margin-bottom: 1.5rem;">
+                    আপনার পুরোনো বা নতুন শীতবস্ত্র দিয়ে আপনিও এই মহৎ উদ্যোগে শামিল হতে পারেন। অথবা আর্থিক অনুদান দিয়ে আমাদের সহায়তা করতে পারেন। প্রতিটি মানুষের মুখে হাসি ফোটানোই আমাদের মূল লক্ষ্য।
+                </p>
+                <h4 style="margin-bottom: 1rem; color: var(--text-dark);">কার্যক্রম সূচি:</h4>
+                <ul class="req-list" style="margin-bottom: 2rem;">
+                    <li>সকাল ১০:০০ - উদ্বোধনী বক্তব্য</li>
+                    <li>সকাল ১০:৩০ - বস্ত্র বিতরণ শুরু</li>
+                    <li>দুপুর ১:০০ - মধ্যাহ্ন বিরতি</li>
+                    <li>বিকাল ৩:০০ - দ্বিতীয় ধাপের বিতরণ</li>
+                    <li>বিকাল ৫:০০ - সমাপ্তি ঘোষণা</li>
+                </ul>
+                <div class="gallery-preview">
+                    <!-- Gallery Images Placeholder -->
+                    <img src="assets/images/about-dealer.png" alt="Activity" style="width: 100%; border-radius: 12px; margin-top: 1rem;">
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-card">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;">অংশগ্রহণ করুন</h3>
+                    <p style="text-align: center; margin-bottom: 1.5rem; color: var(--text-light);">
+                        এই ইভেন্টে স্বেচ্ছাসেবক হিসেবে যোগ দিতে অথবা ডোনেশন করতে নিচের বাটনে ক্লিক করুন।
+                    </p>
+                    <a href="#" class="btn btn-primary" style="width: 100%; text-align: center; margin-bottom: 1rem;">ডোনেশন করুন</a>
+                    <a href="#" class="btn btn-secondary-white" style="width: 100%; text-align: center;">স্বেচ্ছাসেবক হোন</a>
+                    
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #edf2f7;">
+                        <h4 style="font-size: 1.1rem; margin-bottom: 1rem;">যোগাযোগ:</h4>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                            <i class="fas fa-phone-alt" style="color: var(--secondary-color);"></i>
+                            <span>+৮৮০ ১২৩৪ ৫৬৭৮৯০</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <i class="fas fa-envelope" style="color: var(--secondary-color);"></i>
+                            <span>event@mrp.org</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- Same Footer as other pages -->
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3><i class="fas fa-hands-helping"></i> MRP Foundation</h3>
+                    <p>মানবতার সেবায় নিবেদিত একটি প্রতিষ্ঠান। আমরা বিশ্বাস করি একত্রিত প্রচেষ্টাই পারে সমাজকে বদলে দিতে।</p>
+                </div>
+                <!-- Simplified for brevity, usually include formatting -->
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> Muktodhara Technology Limited. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

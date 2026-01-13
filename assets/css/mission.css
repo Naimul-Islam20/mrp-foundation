@@ -1,0 +1,185 @@
+/* Mission and Vision Page Styles */
+
+/* Mission/Vision Section */
+.mission-section {
+    padding: 5rem 0;
+    overflow: hidden;
+}
+
+.mission-row {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    margin-bottom: 5rem;
+}
+
+.mission-row:last-child {
+    margin-bottom: 0;
+}
+
+.mission-row.reverse {
+    flex-direction: row-reverse;
+}
+
+.mission-content {
+    flex: 1;
+}
+
+.mission-image {
+    flex: 1;
+    position: relative;
+}
+
+.mission-image img {
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    width: 100%;
+    transition: transform 0.5s ease;
+}
+
+.mission-image:hover img {
+    transform: scale(1.02);
+}
+
+.mission-icon {
+    font-size: 3rem;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    display: inline-block;
+}
+
+.mission-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.mission-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 80px;
+    height: 4px;
+    background: var(--secondary-color);
+    border-radius: 2px;
+}
+
+.mission-desc {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+/* Core Values Section */
+.values-section {
+    background-color: #f8fafc;
+    padding: 5rem 0;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 3rem;
+}
+
+.value-card {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #edf2f7;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.value-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.value-card:hover {
+    transform: translateY(-10px);
+    border-color: transparent;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.value-card:hover::before {
+    opacity: 1;
+}
+
+.value-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(70, 153, 70, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.value-card:hover .value-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.value-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+    transition: color 0.3s ease;
+}
+
+.value-card:hover .value-title {
+    color: white;
+}
+
+.value-desc {
+    color: var(--text-light);
+    line-height: 1.6;
+    transition: color 0.3s ease;
+}
+
+.value-card:hover .value-desc {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .mission-row {
+        flex-direction: column;
+        gap: 3rem;
+        text-align: center;
+    }
+    
+    .mission-row.reverse {
+        flex-direction: column;
+    }
+
+    .mission-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .mission-image {
+        order: -1; /* Image first on mobile */
+    }
+}
