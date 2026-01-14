@@ -88,8 +88,23 @@
     font-size: 1.1rem;
   }
   
+  
   .contact-map {
     height: 250px;
     min-height: auto;
   }
+}
+
+/* Page Specific Overrides */
+.contact-page-section {
+    background: transparent;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 768px) {
+    .contact-form-wrapper {
+        padding: 1.5rem !important;
+    }
 }
