@@ -17,6 +17,7 @@
     margin-bottom: 0;
 }
 
+
 .mission-row.reverse {
     flex-direction: row-reverse;
 }
@@ -50,10 +51,10 @@
 
 .mission-title {
     font-size: 2.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem; /* Increased gap */
     color: var(--primary-dark);
     position: relative;
-    padding-bottom: 1rem;
+    padding-bottom: 1.5rem; /* Increased padding */
 }
 
 .mission-title::after {
@@ -67,11 +68,32 @@
     border-radius: 2px;
 }
 
-.mission-desc {
+.mission-content p {
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-light);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem; /* Ensure gap below description */
+    margin-top: 1rem;
+}
+
+.mission-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mission-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    margin-bottom: 0.8rem; /* Vertical gap */
+}
+
+.mission-list li i {
+    color: var(--secondary-color); /* Tick point color */
+    font-size: 1.2rem;
 }
 
 /* Core Values Section */

@@ -840,6 +840,43 @@ img {
     left: 0;
   }
 
+  /* Mobile Dropdown Styling */
+  .dropdown-menu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      box-shadow: none;
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out; /* Only animate height */
+      background-color: transparent;
+      width: 100%;
+      min-width: auto;
+      border-radius: 0;
+  }
+  
+  .dropdown.active .dropdown-menu {
+      /* max-height handled by JS for smooth animation */
+      /* Padding removed to fix jumpiness, spacing handled by items */
+      background-color: rgba(0,0,0,0.02); 
+  }
+
+  .dropdown-item {
+      text-align: center;
+      padding: 12px;
+      border-bottom: none; 
+  }
+
+  .dropdown > .nav-link i {
+      transition: transform 0.3s ease;
+  }
+  
+  .dropdown.active > .nav-link i {
+      transform: rotate(180deg);
+  }
+
   .nav-item {
     margin: 0;
     width: 100%;
