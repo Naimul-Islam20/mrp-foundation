@@ -2,7 +2,7 @@
 
 /* Mission/Vision Section */
 .mission-section {
-    padding: 3.5rem 0;
+    padding: 5rem 0;
     overflow: hidden;
 }
 
@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     gap: 4rem;
-    margin-bottom: 3.5rem;
+    margin-bottom: 5rem;
 }
 
 .mission-row:last-child {
@@ -99,7 +99,7 @@
 /* Core Values Section */
 .values-section {
     background-color: #f8fafc;
-    padding: 3.5rem 0;
+    padding: 5rem 0;
 }
 
 .values-grid {
