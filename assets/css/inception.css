@@ -1,39 +1,22 @@
 /* Our Inception Page Styles - Restructured */
 
-/* Stats Hero Section */
-.stats-hero {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    padding: 5rem 0;
-    color: white;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+/* Inception Stats Section */
+
+.inception-stats-section {
+    background-color: #f8fafc;
+    padding: 4rem 0;
+    width: 100%;
+    border-top: 1px solid #edf2f7;
+    border-bottom: 1px solid #edf2f7;
 }
 
-.stats-hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
-    opacity: 0.3;
+.inception-stats .stat-number {
+    color: var(--primary-color);
+    text-shadow: none;
 }
 
-.stats-hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 1;
-}
-
-.stats-hero p {
-    font-size: 1.2rem;
-    margin-bottom: 3rem;
-    opacity: 0.9;
-    position: relative;
-    z-index: 1;
+.inception-stats .stat-label {
+    color: var(--text-light);
 }
 
 .stats-grid {
@@ -66,7 +49,7 @@
 
 /* Story Section */
 .story-section {
-    padding: 6rem 0;
+    padding: 4rem 0;
     background: white;
 }
 
@@ -113,13 +96,13 @@
 
 /* Horizontal Timeline */
 .timeline-section {
-    padding: 6rem 0;
+    padding: 4rem 0;
     background: linear-gradient(to bottom, #f8fafc 0%, white 100%);
 }
 
 .section-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 2.5rem;
 }
 
 .section-header h2 {
@@ -200,7 +183,7 @@
 
 /* Team Grid Section */
 .team-section {
-    padding: 6rem 0;
+    padding: 4rem 0;
     background: white;
 }
 
