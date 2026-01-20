@@ -124,31 +124,31 @@
 
                     <div class="form-group ">
                         <label for="fullName" class="form-label">পূর্ণ নাম <span style="color: red;">*</span></label>
-                        <input type="text" id="fullName" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
+                        <input type="text" id="fullName" name="name" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
                         <div class="error-message">দয়া করে আপনার পূর্ণ নাম লিখুন।</div>
                     </div>
 
                     <div class="form-group ">
                         <label for="mobile" class="form-label">মোবাইল নম্বর <span style="color: red;">*</span></label>
-                        <input type="tel" id="mobile" class="form-control" placeholder="01XXXXXXXXX" required pattern="[0-9]{11}">
+                        <input type="tel" id="mobile" name="mobile" class="form-control" placeholder="01XXXXXXXXX" required pattern="[0-9]{11}">
                         <div class="error-message">সঠিক মোবাইল নম্বর প্রদান করুন (১১ ডিজিট)।</div>
                     </div>
 
                     <div class="form-group ">
                         <label for="email" class="form-label">ইমেইল ঠিকানা <span style="color: red;">*</span></label>
-                        <input type="email" id="email" class="form-control" placeholder="example@email.com" required>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="example@email.com" required>
                         <div class="error-message">সঠিক ইমেইল ঠিকানা প্রদান করুন।</div>
                     </div>
 
                     <div class="form-group">
                         <label for="address" class="form-label">সম্পূর্ণ ঠিকানা <span style="color: red;">*</span></label>
-                        <textarea id="address" class="form-control" rows="2" placeholder="বাড়ি নং, রোড নং, এলাকা..." required></textarea>
+                        <textarea id="address" name="address" class="form-control" rows="2" placeholder="বাড়ি নং, রোড নং, এলাকা..." required></textarea>
                         <div class="error-message">দয়া করে আপনার ঠিকানা লিখুন।</div>
                     </div>
 
                     <div class="form-group">
                         <label for="district" class="form-label">জেলা <span style="color: red;">*</span></label>
-                        <input type="text" id="district" class="form-control" placeholder="আপনার জেলার নাম" required>
+                        <input type="text" id="district" name="district" class="form-control" placeholder="আপনার জেলার নাম" required>
                         <div class="error-message">দয়া করে জেলার নাম লিখুন।</div>
                     </div>
 
@@ -156,12 +156,12 @@
 
                     <div class="form-group">
                         <label for="nid" class="form-label">জাতীয় পরিচয়পত্র (NID) নম্বর (ঐচ্ছিক)</label>
-                        <input type="text" id="nid" class="form-control" placeholder="NID নম্বর লিখুন">
+                        <input type="text" id="nid" name="nid" class="form-control" placeholder="NID নম্বর লিখুন">
                     </div>
 
                     <div class="form-group">
                         <label for="reason" class="form-label">কেন সাব এজেন্ট হতে চান? <span style="color: red;">*</span></label>
-                        <textarea id="reason" class="form-control" rows="3" placeholder="সংক্ষেপে আপনার কারণ লিখুন..." required></textarea>
+                        <textarea id="reason" name="reason" class="form-control" rows="3" placeholder="সংক্ষেপে আপনার কারণ লিখুন..." required></textarea>
                         <div class="error-message">দয়া করে কারণ উল্লেখ করুন।</div>
                     </div>
 

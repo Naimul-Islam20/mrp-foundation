@@ -58,120 +58,213 @@ document.addEventListener('DOMContentLoaded', () => {
         yearElement.textContent = new Date().getFullYear();
     }
 
-    // Dealer Form Validation
-    const dealerForm = document.getElementById('dealerForm');
-    if (dealerForm) {
-        dealerForm.addEventListener('submit', (e) => {
+    // Agent Form Submission (Only for Agent Registration)
+    const agentForm = document.getElementById('onlyAgentForm');
+    if (agentForm) {
+        agentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            let isValid = true;
             
-            // Full Name Validation
-            const fullName = document.getElementById('fullName');
-            if (fullName.value.trim() === '') {
-                fullName.classList.add('error');
-                isValid = false;
-            } else {
-                fullName.classList.remove('error');
-            }
-
-            // Mobile Validation
-            const mobile = document.getElementById('mobile');
-            const mobilePattern = /^[0-9]{11}$/;
-            if (!mobilePattern.test(mobile.value.trim())) {
-                mobile.classList.add('error');
-                isValid = false;
-            } else {
-                mobile.classList.remove('error');
-            }
-
-            // Email Validation (Now Required)
-            const email = document.getElementById('email');
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email.value.trim())) {
-                email.classList.add('error');
-                isValid = false;
-            } else {
-                email.classList.remove('error');
-            }
-
-            // Business Name Validation
-            const businessName = document.getElementById('businessName');
-            if (businessName.value.trim() === '') {
-                businessName.classList.add('error');
-                isValid = false;
-            } else {
-                businessName.classList.remove('error');
-            }
-
-            // Business Type Validation
-            const businessType = document.getElementById('businessType');
-            if (businessType.value === '') {
-                businessType.classList.add('error');
-                isValid = false;
-            } else {
-                businessType.classList.remove('error');
-            }
-
-            // Business Years Validation
-            const businessYears = document.getElementById('businessYears');
-            if (businessYears.value.trim() === '') {
-                businessYears.classList.add('error');
-                isValid = false;
-            } else {
-                businessYears.classList.remove('error');
-            }
-
-            // Address Validation
-            const address = document.getElementById('address');
-            if (address.value.trim() === '') {
-                address.classList.add('error');
-                isValid = false;
-            } else {
-                address.classList.remove('error');
-            }
-
-            // District Validation
-            const district = document.getElementById('district');
-            if (district.value.trim() === '') {
-                district.classList.add('error');
-                isValid = false;
-            } else {
-                district.classList.remove('error');
-            }
-
-            // Reason Validation
-            const reason = document.getElementById('reason');
-            if (reason.value.trim() === '') {
-                reason.classList.add('error');
-                isValid = false;
-            } else {
-                reason.classList.remove('error');
-            }
-
-            // Consent Validation
-            const consent = document.getElementById('consent');
-            const consentError = document.getElementById('consentError');
-            if (!consent.checked) {
-                consentError.style.display = 'block';
-                isValid = false;
-            } else {
-                consentError.style.display = 'none';
-            }
+            let isValid = true;
+            const controls = agentForm.querySelectorAll('.form-control, #consent');
+            
+            controls.forEach(control => {
+                if (control.id === 'consent') {
+                    const consentError = document.getElementById('consentError');
+                    if (!control.checked) {
+                        if (consentError) consentError.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        if (consentError) consentError.style.display = 'none';
+                    }
+                } else {
+                    const value = control.value.trim();
+                    if (control.hasAttribute('required') && value === '') {
+                        control.classList.add('error');
+                        isValid = false;
+                    } else {
+                        control.classList.remove('error');
+                    }
+                }
+            });
 
             if (isValid) {
-                // Show Custom Modal instead of Alert
-                if (typeof showModal === 'function') {
-                    showModal();
-                } else {
-                    // Fallback if function not defined in current scope (though it should be)
-                    alert('আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে! আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।');
+                const submitBtn = agentForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.textContent;
+                
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+                    
+                    const formDataObj = new FormData(agentForm);
+                    const data = {};
+                    formDataObj.forEach((value, key) => data[key] = value);
+                    
+                    const response = await fetch('http://192.168.68.112:8000/api/agent-registration', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json().catch(() => ({}));
+
+                    if (response.ok) {
+                        if (typeof showModal === 'function') {
+                            showModal();
+                        } else {
+                            alert('আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে!');
+                        }
+                        agentForm.reset();
+                    } else {
+                        let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
+                        if (result.errors) {
+                            const errorDetails = Object.values(result.errors).flat().join('\n');
+                            errorMsg = errorDetails;
+                        }
+                        
+                        // Show Error in Modal instead of alert
+                        const errorModal = document.getElementById('errorModal');
+                        const errorDetailsBox = document.getElementById('errorDetails');
+                        if (errorModal && errorDetailsBox) {
+                            errorDetailsBox.textContent = errorMsg;
+                            errorModal.classList.add('active');
+                        } else {
+                            alert('ত্রুটিঃ\n' + errorMsg);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Submission Error:', error);
+                    const errorModal = document.getElementById('errorModal');
+                    const errorDetailsBox = document.getElementById('errorDetails');
+                    if (errorModal && errorDetailsBox) {
+                        errorDetailsBox.textContent = error.message;
+                        errorModal.classList.add('active');
+                    } else {
+                        alert('ত্রুটিঃ ' + error.message);
+                    }
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
                 }
-                dealerForm.reset();
             }
         });
 
         // Real-time validation removal
-        document.querySelectorAll('.form-control').forEach(input => {
+        agentForm.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', () => {
+                input.classList.remove('error');
+            });
+        });
+    }
+
+    // Sub-agent & Other Generic forms (Local/Demo behavior as requested "only agent")
+    const genericAgentForm = document.getElementById('agentForm');
+    if (genericAgentForm) {
+        genericAgentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Just show modal for demo/local behavior as per "only agent" requirement
+            if (typeof showModal === 'function') {
+                showModal();
+            }
+            genericAgentForm.reset();
+        });
+    }
+
+    // Member Form Submission
+    const memberForm = document.getElementById('memberForm');
+    if (memberForm) {
+        memberForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = memberForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            
+            // Simple validation
+            let isValid = true;
+            const requiredFields = memberForm.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (field.type === 'checkbox') {
+                    if (!field.checked) isValid = false;
+                } else if (!field.value.trim()) {
+                    field.classList.add('error');
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+
+            if (!isValid) {
+                alert('দয়া করে সকল প্রয়োজনীয় তথ্য পূরণ করুন।');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+                
+                // For member form, we use FormData because it includes a photo
+                const formData = new FormData(memberForm);
+                
+                const response = await fetch('http://192.168.68.112:8000/api/member-registration', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    const modal = document.getElementById('successModal');
+                    if (modal) {
+                        modal.classList.add('active');
+                    } else {
+                        alert('আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে!');
+                    }
+                    memberForm.reset();
+                    // Reset photo preview if exists
+                    const previewImg = document.getElementById('previewImg');
+                    const uploadPlaceholder = document.querySelector('.upload-placeholder');
+                    if (previewImg) previewImg.style.display = 'none';
+                    if (uploadPlaceholder) uploadPlaceholder.style.display = 'flex';
+                } else {
+                    let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
+                    if (result.errors) {
+                        const errorDetails = Object.values(result.errors).flat().join('\n');
+                        errorMsg = errorDetails;
+                    }
+                    
+                    // Show Error in Modal instead of alert
+                    const errorModal = document.getElementById('errorModal');
+                    const errorDetailsBox = document.getElementById('errorDetails');
+                    if (errorModal && errorDetailsBox) {
+                        errorDetailsBox.textContent = errorMsg;
+                        errorModal.classList.add('active');
+                    } else {
+                        alert('ত্রুটিঃ\n' + errorMsg);
+                    }
+                }
+            } catch (error) {
+                console.error('Member Submission Error:', error);
+                const errorModal = document.getElementById('errorModal');
+                const errorDetailsBox = document.getElementById('errorDetails');
+                if (errorModal && errorDetailsBox) {
+                    errorDetailsBox.textContent = error.message;
+                    errorModal.classList.add('active');
+                } else {
+                    alert('ত্রুটিঃ ' + error.message);
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+        // Real-time validation removal for member form
+        memberForm.querySelectorAll('.form-control').forEach(input => {
             input.addEventListener('input', () => {
                 input.classList.remove('error');
             });
