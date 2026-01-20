@@ -369,6 +369,98 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Contact Form Submission
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            
+            // Simple validation
+            let isValid = true;
+            const requiredFields = contactForm.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+
+            if (!isValid) {
+                alert('দয়া করে সকল প্রয়োজনীয় তথ্য পূরণ করুন।');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পাঠানো হচ্ছে...';
+                
+                const formDataObj = new FormData(contactForm);
+                const data = {};
+                formDataObj.forEach((value, key) => data[key] = value);
+                
+                const response = await fetch('http://192.168.68.112:8000/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    const modal = document.getElementById('successModal');
+                    if (modal) {
+                        modal.classList.add('active');
+                    } else {
+                        alert('আপনার বার্তা সফলভাবে পাঠানো হয়েছে!');
+                    }
+                    contactForm.reset();
+                } else {
+                    let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
+                    if (result.errors) {
+                        const errorDetails = Object.values(result.errors).flat().join('\n');
+                        errorMsg = errorDetails;
+                    }
+                    
+                    const errorModal = document.getElementById('errorModal');
+                    const errorDetailsBox = document.getElementById('errorDetails');
+                    if (errorModal && errorDetailsBox) {
+                        errorDetailsBox.textContent = errorMsg;
+                        errorModal.classList.add('active');
+                    } else {
+                        alert('ত্রুটিঃ\n' + errorMsg);
+                    }
+                }
+            } catch (error) {
+                console.error('Contact Submission Error:', error);
+                const errorModal = document.getElementById('errorModal');
+                const errorDetailsBox = document.getElementById('errorDetails');
+                if (errorModal && errorDetailsBox) {
+                    errorDetailsBox.textContent = error.message;
+                    errorModal.classList.add('active');
+                } else {
+                    alert('ত্রুটিঃ ' + error.message);
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+        contactForm.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', () => {
+                input.classList.remove('error');
+            });
+        });
+    }
+
     // Scroll Animation Observer
     const observerOptions = {
         root: null,
