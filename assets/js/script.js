@@ -159,12 +159,110 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Sub-agent & Other Generic forms (Local/Demo behavior as requested "only agent")
+    // Sub-Agent Form Submission
+    const subAgentForm = document.getElementById('onlySubAgentForm');
+    if (subAgentForm) {
+        subAgentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let isValid = true;
+            const controls = subAgentForm.querySelectorAll('.form-control, #consent');
+            
+            controls.forEach(control => {
+                if (control.id === 'consent') {
+                    const consentError = document.getElementById('consentError');
+                    if (!control.checked) {
+                        if (consentError) consentError.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        if (consentError) consentError.style.display = 'none';
+                    }
+                } else {
+                    const value = control.value.trim();
+                    if (control.hasAttribute('required') && value === '') {
+                        control.classList.add('error');
+                        isValid = false;
+                    } else {
+                        control.classList.remove('error');
+                    }
+                }
+            });
+
+            if (isValid) {
+                const submitBtn = subAgentForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.textContent;
+                
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+                    
+                    const formDataObj = new FormData(subAgentForm);
+                    const data = {};
+                    formDataObj.forEach((value, key) => data[key] = value);
+                    
+                    const response = await fetch('http://192.168.68.112:8000/api/sub-agent-registration', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json().catch(() => ({}));
+
+                    if (response.ok) {
+                        if (typeof showModal === 'function') {
+                            showModal();
+                        } else {
+                            alert('আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে!');
+                        }
+                        subAgentForm.reset();
+                    } else {
+                        let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
+                        if (result.errors) {
+                            const errorDetails = Object.values(result.errors).flat().join('\n');
+                            errorMsg = errorDetails;
+                        }
+                        
+                        const errorModal = document.getElementById('errorModal');
+                        const errorDetailsBox = document.getElementById('errorDetails');
+                        if (errorModal && errorDetailsBox) {
+                            errorDetailsBox.textContent = errorMsg;
+                            errorModal.classList.add('active');
+                        } else {
+                            alert('ত্রুটিঃ\n' + errorMsg);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Submission Error:', error);
+                    const errorModal = document.getElementById('errorModal');
+                    const errorDetailsBox = document.getElementById('errorDetails');
+                    if (errorModal && errorDetailsBox) {
+                        errorDetailsBox.textContent = error.message;
+                        errorModal.classList.add('active');
+                    } else {
+                        alert('ত্রুটিঃ ' + error.message);
+                    }
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
+            }
+        });
+
+        subAgentForm.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', () => {
+                input.classList.remove('error');
+            });
+        });
+    }
+
+    // Generic forms (Local/Demo behavior)
     const genericAgentForm = document.getElementById('agentForm');
     if (genericAgentForm) {
         genericAgentForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            // Just show modal for demo/local behavior as per "only agent" requirement
             if (typeof showModal === 'function') {
                 showModal();
             }

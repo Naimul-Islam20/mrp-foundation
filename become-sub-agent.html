@@ -119,18 +119,18 @@
     <section class="section" style="padding-top: 0;">
         <div class="container">
             <div class="form-container reveal-text delay-200">
-                <form id="agentForm" class="reveal-text delay-200" novalidate>
+                <form id="onlySubAgentForm" class="reveal-text delay-200" novalidate>
                     <!-- Personal Info -->
 
                     <div class="form-group ">
                         <label for="fullName" class="form-label">পূর্ণ নাম <span style="color: red;">*</span></label>
-                        <input type="text" id="fullName" name="name" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
+                        <input type="text" id="fullName" name="full_name" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
                         <div class="error-message">দয়া করে আপনার পূর্ণ নাম লিখুন।</div>
                     </div>
 
                     <div class="form-group ">
                         <label for="mobile" class="form-label">মোবাইল নম্বর <span style="color: red;">*</span></label>
-                        <input type="tel" id="mobile" name="mobile" class="form-control" placeholder="01XXXXXXXXX" required pattern="[0-9]{11}">
+                        <input type="tel" id="mobile" name="mobile_no" class="form-control" placeholder="01XXXXXXXXX" required pattern="[0-9]{11}">
                         <div class="error-message">সঠিক মোবাইল নম্বর প্রদান করুন (১১ ডিজিট)।</div>
                     </div>
 
@@ -156,12 +156,12 @@
 
                     <div class="form-group">
                         <label for="nid" class="form-label">জাতীয় পরিচয়পত্র (NID) নম্বর (ঐচ্ছিক)</label>
-                        <input type="text" id="nid" name="nid" class="form-control" placeholder="NID নম্বর লিখুন">
+                        <input type="text" id="nid" name="nid_no" class="form-control" placeholder="NID নম্বর লিখুন">
                     </div>
 
                     <div class="form-group">
                         <label for="reason" class="form-label">কেন সাব এজেন্ট হতে চান? <span style="color: red;">*</span></label>
-                        <textarea id="reason" name="reason" class="form-control" rows="3" placeholder="সংক্ষেপে আপনার কারণ লিখুন..." required></textarea>
+                        <textarea id="reason" name="description" class="form-control" rows="3" placeholder="সংক্ষেপে আপনার কারণ লিখুন..." required></textarea>
                         <div class="error-message">দয়া করে কারণ উল্লেখ করুন।</div>
                     </div>
 
@@ -232,12 +232,21 @@
     <!-- Success Modal -->
     <div class="modal-overlay" id="successModal">
         <div class="success-modal">
-            <div class="success-icon">
-                <i class="fas fa-check"></i>
-            </div>
+            <div class="success-icon"><i class="fas fa-check"></i></div>
             <h3>অভিনন্দন!</h3>
             <p>আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে।<br>আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।</p>
             <button class="btn-success" onclick="closeModal()">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="error-modal">
+            <div class="error-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>আবেদন জমা দেওয়া যায়নি</h3>
+            <p style="margin-bottom: 10px;">নিচের ত্রুটিগুলো সমাধান করে পুনরায় চেষ্টা করুন:</p>
+            <div class="error-details-box" id="errorDetails"></div>
+            <button class="btn-error-close" onclick="document.getElementById('errorModal').classList.remove('active')">বন্ধ করুন</button>
         </div>
     </div>
 
