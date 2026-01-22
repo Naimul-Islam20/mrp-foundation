@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = {};
                     formDataObj.forEach((value, key) => data[key] = value);
                     
-                    const response = await fetch('http://192.168.68.112:8000/api/agent-registration', {
+                    const response = await fetch('https://admin.mrpfoundation.net/admin/agent-registrations', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = {};
                     formDataObj.forEach((value, key) => data[key] = value);
                     
-                    const response = await fetch('http://192.168.68.112:8000/api/sub-agent-registration', {
+                    const response = await fetch('https://admin.mrpfoundation.net/admin/sub-agent-registrations', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // For member form, we use FormData because it includes a photo
                 const formData = new FormData(memberForm);
                 
-                const response = await fetch('http://192.168.68.112:8000/api/member-registration', {
+                const response = await fetch('https://admin.mrpfoundation.net/admin/member-registrations', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('http://192.168.68.112:8000/api/contact', {
+                const response = await fetch('https://admin.mrpfoundation.net/admin/contacts', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
