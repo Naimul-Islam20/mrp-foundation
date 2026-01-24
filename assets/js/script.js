@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = {};
                     formDataObj.forEach((value, key) => data[key] = value);
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/admin/agent-registrations', {
+                    const response = await fetch('https://admin.mrpfoundation.net/api/agent-registration', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = {};
                     formDataObj.forEach((value, key) => data[key] = value);
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/admin/sub-agent-registrations', {
+                    const response = await fetch('https://admin.mrpfoundation.net/api/sub-agent-registration', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // For member form, we use FormData because it includes a photo
                 const formData = new FormData(memberForm);
                 
-                const response = await fetch('https://admin.mrpfoundation.net/admin/member-registrations', {
+                const response = await fetch('https://admin.mrpfoundation.net/api/member-registration', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('https://admin.mrpfoundation.net/admin/contacts', {
+                const response = await fetch('https://admin.mrpfoundation.net/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
