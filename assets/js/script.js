@@ -185,18 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const formData = new FormData(agentForm);
                     
-                    // --- DEBUG: LOG BROWSER DATA ---
-                    console.log("--- BROWSER IS SENDING THESE FIELDS ---");
-                    const debugTable = [];
-                    for (let [key, value] of formData.entries()) {
-                        if (value instanceof File) {
-                            debugTable.push({ Field: key, Type: "File", Value: `${value.name} (${value.size} bytes)` });
-                        } else {
-                            debugTable.push({ Field: key, Type: "Text", Value: value });
-                        }
-                    }
-                    console.table(debugTable);
-                    
                     // Convert signature Base64 to PNG File
                     const signatureData = signatureInput.value;
                     if (signatureData) {
@@ -204,24 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             const blob = await (await fetch(signatureData)).blob();
                             formData.delete('digital_sign'); 
                             formData.append('digital_sign', blob, 'signature.png'); 
-                            console.log("✅ Digital Sign converted and added to form data");
                         } catch (sigErr) {
                             console.error("❌ Signature conversion failed:", sigErr);
                         }
                     }
-
-                    // --- POSTMAN DEBUG START ---
-                    const postmanObj = {};
-                    formData.forEach((value, key) => {
-                        if (value instanceof File) {
-                            postmanObj[key] = `[FILE: ${value.name}]`;
-                        } else {
-                            postmanObj[key] = value;
-                        }
-                    });
-                    console.log("--- DATA FOR POSTMAN (In JSON format) ---");
-                    console.log(JSON.stringify(postmanObj, null, 4));
-                    // --- POSTMAN DEBUG END ---
                     
                     const response = await fetch('http://192.168.68.112:8001/api/agent-registration', {
                         method: 'POST',
@@ -232,10 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     const result = await response.json().catch(() => ({}));
-                    
-                    console.log("--- SERVER RESPONSE ---");
-                    console.log("Status Code:", response.status);
-                    console.log("Response Data:", result);
 
                     if (response.ok) {
                         if (typeof showModal === 'function') {
