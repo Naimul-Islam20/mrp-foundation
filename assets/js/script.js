@@ -61,6 +61,78 @@ document.addEventListener('DOMContentLoaded', () => {
     // Agent Form Submission (Only for Agent Registration)
     const agentForm = document.getElementById('onlyAgentForm');
     if (agentForm) {
+        // Signature Pad Logic
+        const canvas = document.getElementById('signaturePad');
+        const clearBtn = document.getElementById('clearSignature');
+        const signatureInput = document.getElementById('signatureInput');
+        let signatureDrawing = false;
+        
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            
+            const resizeCanvas = () => {
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                canvas.height = canvas.offsetHeight * ratio;
+                ctx.scale(ratio, ratio);
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000';
+            };
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const getPos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            };
+
+            const startDrawing = (e) => {
+                signatureDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            };
+
+            const draw = (e) => {
+                if (!signatureDrawing) return;
+                const pos = getPos(e);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                signatureInput.value = canvas.toDataURL(); // Store as base64
+                // Remove error if drawing
+                const sigWrapper = document.querySelector('.signature-pad-wrapper');
+                const sigError = document.getElementById('signatureError');
+                if (sigWrapper) sigWrapper.style.borderColor = '';
+                if (sigError) sigError.style.display = 'none';
+            };
+
+            const stopDrawing = () => {
+                signatureDrawing = false;
+            };
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            window.addEventListener('mouseup', stopDrawing);
+
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+            canvas.addEventListener('touchend', stopDrawing);
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    signatureInput.value = '';
+                });
+            }
+        }
+
         agentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -87,6 +159,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            // Signature validation
+            if (signatureInput && signatureInput.hasAttribute('required') && signatureInput.value === '') {
+                const sigWrapper = document.querySelector('.signature-pad-wrapper');
+                const sigError = document.getElementById('signatureError');
+                if (sigWrapper) sigWrapper.style.borderColor = 'var(--error)';
+                if (sigError) sigError.style.display = 'block';
+                isValid = false;
+            }
+
             if (isValid) {
                 const submitBtn = agentForm.querySelector('button[type="submit"]');
                 const originalBtnText = submitBtn.textContent;
@@ -95,17 +176,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
                     
-                    const formDataObj = new FormData(agentForm);
-                    const data = {};
-                    formDataObj.forEach((value, key) => data[key] = value);
+                    const formData = new FormData(agentForm);
+                    
+                    // Convert signature Base64 to PNG File
+                    const signatureData = signatureInput.value;
+                    if (signatureData) {
+                        const blob = await (await fetch(signatureData)).blob();
+                        formData.delete('signature'); // Remove base64 string
+                        formData.append('signature', blob, 'signature.png'); // Add as file
+                    }
                     
                     const response = await fetch('https://admin.mrpfoundation.net/api/agent-registration', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify(data)
+                        body: formData
                     });
 
                     const result = await response.json().catch(() => ({}));
@@ -117,6 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             alert('আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে!');
                         }
                         agentForm.reset();
+                        // Reset canvas
+                        if (canvas) {
+                            const ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        }
                     } else {
                         let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
                         if (result.errors) {
@@ -162,6 +253,77 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sub-Agent Form Submission
     const subAgentForm = document.getElementById('onlySubAgentForm');
     if (subAgentForm) {
+        // Signature Pad Logic for Sub-Agent (matches Agent ID)
+        const canvas = document.getElementById('signaturePad');
+        const clearBtn = document.getElementById('clearSignature');
+        const signatureInput = document.getElementById('signatureInput');
+        let signatureDrawing = false;
+        
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            
+            const resizeCanvas = () => {
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                canvas.height = canvas.offsetHeight * ratio;
+                ctx.scale(ratio, ratio);
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000';
+            };
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const getPos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            };
+
+            const startDrawing = (e) => {
+                signatureDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            };
+
+            const draw = (e) => {
+                if (!signatureDrawing) return;
+                const pos = getPos(e);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                signatureInput.value = canvas.toDataURL();
+                const sigWrapper = canvas.closest('.signature-pad-wrapper');
+                const sigError = document.getElementById('signatureError');
+                if (sigWrapper) sigWrapper.style.borderColor = '';
+                if (sigError) sigError.style.display = 'none';
+            };
+
+            const stopDrawing = () => {
+                signatureDrawing = false;
+            };
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            window.addEventListener('mouseup', stopDrawing);
+
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+            canvas.addEventListener('touchend', stopDrawing);
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    signatureInput.value = '';
+                });
+            }
+        }
+
         subAgentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -188,6 +350,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            // Signature validation
+            if (signatureInput && signatureInput.hasAttribute('required') && signatureInput.value === '') {
+                const sigWrapper = canvas.closest('.signature-pad-wrapper');
+                const sigError = document.getElementById('signatureError');
+                if (sigWrapper) sigWrapper.style.borderColor = 'var(--error)';
+                if (sigError) sigError.style.display = 'block';
+                isValid = false;
+            }
+
             if (isValid) {
                 const submitBtn = subAgentForm.querySelector('button[type="submit"]');
                 const originalBtnText = submitBtn.textContent;
@@ -196,17 +367,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
                     
-                    const formDataObj = new FormData(subAgentForm);
-                    const data = {};
-                    formDataObj.forEach((value, key) => data[key] = value);
+                    const formData = new FormData(subAgentForm);
+
+                    // Convert signature Base64 to PNG File
+                    const signatureData = signatureInput.value;
+                    if (signatureData) {
+                        const blob = await (await fetch(signatureData)).blob();
+                        formData.delete('signature'); // Remove base64 string
+                        formData.append('signature', blob, 'signature.png'); // Add as file
+                    }
                     
                     const response = await fetch('https://admin.mrpfoundation.net/api/sub-agent-registration', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify(data)
+                        body: formData
                     });
 
                     const result = await response.json().catch(() => ({}));
@@ -218,6 +394,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             alert('আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে!');
                         }
                         subAgentForm.reset();
+                        if (canvas) {
+                            const ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        }
                     } else {
                         let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
                         if (result.errors) {
