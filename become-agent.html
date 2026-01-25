@@ -184,13 +184,13 @@
 
                         <div class="form-group">
                             <label for="nidPhotocopy" class="form-label">NID ফটোকপি <span style="color: red;">*</span></label>
-                            <input type="file" id="nidPhotocopy" name="nid_photocopy" class="form-control" required>
+                            <input type="file" id="nidPhotocopy" name="nid_file" class="form-control" required>
                             <div class="error-message">দয়া করে NID কার্ডের ফটোকপি আপলোড করুন।</div>
                         </div>
 
                         <div class="form-group">
                             <label for="agentPhotos" class="form-label">ছবি (২ কপি) <span style="color: red;">*</span></label>
-                            <input type="file" id="agentPhotos" name="agent_photos" class="form-control" required multiple>
+                            <input type="file" id="agentPhotos" name="photo_up[]" class="form-control" required multiple>
                             <div class="error-message">দয়া করে দুই কপি ফটো আপলোড করুন।</div>
                         </div>
 
@@ -202,18 +202,18 @@
 
                         <div class="form-group">
                             <label for="husbandDocs" class="form-label">স্বামীর তথ্য (নারীদের জন্য)</label>
-                            <input type="file" id="husbandDocs" name="husband_docs" class="form-control">
+                            <input type="file" id="husbandDocs" name="husbands_information" class="form-control">
                         </div>
 
                         <div class="form-group">
                             <label for="signedForm" class="form-label">গণ্যমান্য ব্যক্তির স্বাক্ষরিত ফরম <span style="color: red;">*</span></label>
-                            <input type="file" id="signedForm" name="signed_form" class="form-control" required>
+                            <input type="file" id="signedForm" name="considerable_person_sign" class="form-control" required>
                             <div class="error-message">দয়া করে স্বাক্ষরিত ফরমটি আপলোড করুন।</div>
                         </div>
 
                         <div class="form-group">
                             <label for="bankChecks" class="form-label">ব্যাংক চেক ও চুক্তিনামা <span style="color: red;">*</span></label>
-                            <input type="file" id="bankChecks" name="bank_checks_agreement" class="form-control" required multiple>
+                            <input type="file" id="bankChecks" name="bank_check" class="form-control" required multiple>
                             <div class="error-message">দয়া করে চেক এবং চুক্তিনামা আপলোড করুন।</div>
                         </div>
 
@@ -244,7 +244,7 @@
                                     <button type="button" id="clearSignature" class="btn-clear"><i class="fas fa-trash-alt"></i> মুছুন</button>
                                 </div>
                             </div>
-                            <input type="hidden" name="signature" id="signatureInput" required>
+                            <input type="hidden" name="digital_sign" id="signatureInput" required>
                             <div class="error-message" id="signatureError" style="margin-top: 0;">দয়া করে স্বাক্ষর প্রদান করুন।</div>
                         </div>
 

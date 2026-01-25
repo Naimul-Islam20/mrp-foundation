@@ -158,6 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
+            // Custom validation for photos (max 2)
+            const photoInput = agentForm.querySelector('#agentPhotos');
+            if (photoInput && photoInput.files.length > 2) {
+                alert('আপনি ২টির বেশি ছবি আপলোড করতে পারবেন না।');
+                photoInput.classList.add('error');
+                isValid = false;
+            }
 
             // Signature validation
             if (signatureInput && signatureInput.hasAttribute('required') && signatureInput.value === '') {
@@ -178,15 +185,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const formData = new FormData(agentForm);
                     
+                    // --- DEBUG: LOG BROWSER DATA ---
+                    console.log("--- BROWSER IS SENDING THESE FIELDS ---");
+                    const debugTable = [];
+                    for (let [key, value] of formData.entries()) {
+                        if (value instanceof File) {
+                            debugTable.push({ Field: key, Type: "File", Value: `${value.name} (${value.size} bytes)` });
+                        } else {
+                            debugTable.push({ Field: key, Type: "Text", Value: value });
+                        }
+                    }
+                    console.table(debugTable);
+                    
                     // Convert signature Base64 to PNG File
                     const signatureData = signatureInput.value;
                     if (signatureData) {
-                        const blob = await (await fetch(signatureData)).blob();
-                        formData.delete('signature'); // Remove base64 string
-                        formData.append('signature', blob, 'signature.png'); // Add as file
+                        try {
+                            const blob = await (await fetch(signatureData)).blob();
+                            formData.delete('digital_sign'); 
+                            formData.append('digital_sign', blob, 'signature.png'); 
+                            console.log("✅ Digital Sign converted and added to form data");
+                        } catch (sigErr) {
+                            console.error("❌ Signature conversion failed:", sigErr);
+                        }
                     }
+
+                    // --- POSTMAN DEBUG START ---
+                    const postmanObj = {};
+                    formData.forEach((value, key) => {
+                        if (value instanceof File) {
+                            postmanObj[key] = `[FILE: ${value.name}]`;
+                        } else {
+                            postmanObj[key] = value;
+                        }
+                    });
+                    console.log("--- DATA FOR POSTMAN (In JSON format) ---");
+                    console.log(JSON.stringify(postmanObj, null, 4));
+                    // --- POSTMAN DEBUG END ---
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/api/agent-registration', {
+                    const response = await fetch('http://192.168.68.112:8001/api/agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -195,6 +232,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     const result = await response.json().catch(() => ({}));
+                    
+                    console.log("--- SERVER RESPONSE ---");
+                    console.log("Status Code:", response.status);
+                    console.log("Response Data:", result);
 
                     if (response.ok) {
                         if (typeof showModal === 'function') {
