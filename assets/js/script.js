@@ -273,8 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const response = await fetch('https://admin.mrpfoundation.net/api/agent-registration', {
                         method: 'POST',
                         headers: {
-                            'Accept': 'application/json', 
-                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
                         body: formData
                     });
