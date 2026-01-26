@@ -58,80 +58,104 @@ document.addEventListener('DOMContentLoaded', () => {
         yearElement.textContent = new Date().getFullYear();
     }
 
-    // Agent Form Submission (Only for Agent Registration)
+    // Common Signature Pad Logic
+    function initSignaturePad(canvasId, inputId, clearBtnId) {
+        const canvas = document.getElementById(canvasId);
+        const signatureInput = document.getElementById(inputId);
+        const clearBtn = document.getElementById(clearBtnId);
+        
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let signatureDrawing = false;
+
+        const resizeCanvas = () => {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            // Get dimensions from computed style or fallback
+            const width = canvas.offsetWidth || 300;
+            const height = canvas.offsetHeight || 150;
+            
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+            ctx.scale(ratio, ratio);
+            
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000';
+            
+            // Fill background white explicitly
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, width, height);
+            
+            // If there's already data in input, redraw it (optional, but good for persistence)
+            if (signatureInput && signatureInput.value) {
+                const img = new Image();
+                img.onload = () => ctx.drawImage(img, 0, 0, width, height);
+                img.src = signatureInput.value;
+            }
+        };
+
+        // Delay initialization to ensure layout is ready (fixes issues with reveal animations)
+        setTimeout(resizeCanvas, 200);
+        window.addEventListener('resize', resizeCanvas);
+
+        const getPos = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        };
+
+        const startDrawing = (e) => {
+            signatureDrawing = true;
+            const pos = getPos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        };
+
+        const draw = (e) => {
+            if (!signatureDrawing) return;
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            signatureInput.value = canvas.toDataURL();
+            
+            // Remove error if drawing
+            const sigWrapper = canvas.closest('.signature-pad-wrapper');
+            const sigError = document.getElementById('signatureError');
+            if (sigWrapper) sigWrapper.style.borderColor = '';
+            if (sigError) sigError.style.display = 'none';
+        };
+
+        const stopDrawing = () => {
+            signatureDrawing = false;
+        };
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Standard clear
+                ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill white again
+                signatureInput.value = '';
+            });
+        }
+    }
+
+    // Agent Form Submission Logic
     const agentForm = document.getElementById('onlyAgentForm');
     if (agentForm) {
-        // Signature Pad Logic
-        const canvas = document.getElementById('signaturePad');
-        const clearBtn = document.getElementById('clearSignature');
-        const signatureInput = document.getElementById('signatureInput');
-        let signatureDrawing = false;
-        
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            
-            const resizeCanvas = () => {
-                const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                canvas.width = canvas.offsetWidth * ratio;
-                canvas.height = canvas.offsetHeight * ratio;
-                ctx.scale(ratio, ratio);
-                ctx.lineWidth = 2;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#000';
-            };
-
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            const getPos = (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
-            };
-
-            const startDrawing = (e) => {
-                signatureDrawing = true;
-                const pos = getPos(e);
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            };
-
-            const draw = (e) => {
-                if (!signatureDrawing) return;
-                const pos = getPos(e);
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-                signatureInput.value = canvas.toDataURL(); // Store as base64
-                // Remove error if drawing
-                const sigWrapper = document.querySelector('.signature-pad-wrapper');
-                const sigError = document.getElementById('signatureError');
-                if (sigWrapper) sigWrapper.style.borderColor = '';
-                if (sigError) sigError.style.display = 'none';
-            };
-
-            const stopDrawing = () => {
-                signatureDrawing = false;
-            };
-
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            window.addEventListener('mouseup', stopDrawing);
-
-            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
-            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
-            canvas.addEventListener('touchend', stopDrawing);
-
-            if (clearBtn) {
-                clearBtn.addEventListener('click', () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    signatureInput.value = '';
-                });
-            }
-        }
+        initSignaturePad('signaturePad', 'signatureInput', 'clearSignature');
 
         agentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -264,76 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sub-Agent Form Submission
     const subAgentForm = document.getElementById('onlySubAgentForm');
     if (subAgentForm) {
-        // Signature Pad Logic for Sub-Agent (matches Agent ID)
-        const canvas = document.getElementById('signaturePad');
-        const clearBtn = document.getElementById('clearSignature');
-        const signatureInput = document.getElementById('signatureInput');
-        let signatureDrawing = false;
-        
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            
-            const resizeCanvas = () => {
-                const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                canvas.width = canvas.offsetWidth * ratio;
-                canvas.height = canvas.offsetHeight * ratio;
-                ctx.scale(ratio, ratio);
-                ctx.lineWidth = 2;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#000';
-            };
-
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            const getPos = (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
-            };
-
-            const startDrawing = (e) => {
-                signatureDrawing = true;
-                const pos = getPos(e);
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            };
-
-            const draw = (e) => {
-                if (!signatureDrawing) return;
-                const pos = getPos(e);
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-                signatureInput.value = canvas.toDataURL();
-                const sigWrapper = canvas.closest('.signature-pad-wrapper');
-                const sigError = document.getElementById('signatureError');
-                if (sigWrapper) sigWrapper.style.borderColor = '';
-                if (sigError) sigError.style.display = 'none';
-            };
-
-            const stopDrawing = () => {
-                signatureDrawing = false;
-            };
-
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            window.addEventListener('mouseup', stopDrawing);
-
-            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
-            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
-            canvas.addEventListener('touchend', stopDrawing);
-
-            if (clearBtn) {
-                clearBtn.addEventListener('click', () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    signatureInput.value = '';
-                });
-            }
-        }
+        initSignaturePad('signaturePad', 'signatureInput', 'clearSignature');
 
         subAgentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -468,77 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Member Form Submission
     const memberForm = document.getElementById('memberForm');
     if (memberForm) {
-        // Signature Pad Logic
-        const canvas = document.getElementById('signaturePad');
-        const clearBtn = document.getElementById('clearSignature');
-        const signatureInput = document.getElementById('signatureInput');
-        let signatureDrawing = false;
-        
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            
-            const resizeCanvas = () => {
-                const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                canvas.width = canvas.offsetWidth * ratio;
-                canvas.height = canvas.offsetHeight * ratio;
-                ctx.scale(ratio, ratio);
-                ctx.lineWidth = 2;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#000';
-            };
-
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            const getPos = (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
-            };
-
-            const startDrawing = (e) => {
-                signatureDrawing = true;
-                const pos = getPos(e);
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            };
-
-            const draw = (e) => {
-                if (!signatureDrawing) return;
-                const pos = getPos(e);
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-                signatureInput.value = canvas.toDataURL();
-                // Remove error if drawing
-                const sigWrapper = canvas.closest('.signature-pad-wrapper');
-                const sigError = document.getElementById('signatureError');
-                if (sigWrapper) sigWrapper.style.borderColor = '';
-                if (sigError) sigError.style.display = 'none';
-            };
-
-            const stopDrawing = () => {
-                signatureDrawing = false;
-            };
-
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            window.addEventListener('mouseup', stopDrawing);
-
-            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
-            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
-            canvas.addEventListener('touchend', stopDrawing);
-
-            if (clearBtn) {
-                clearBtn.addEventListener('click', () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    signatureInput.value = '';
-                });
-            }
-        }
+        initSignaturePad('signaturePad', 'signatureInput', 'clearSignature');
 
         memberForm.addEventListener('submit', async (e) => {
             e.preventDefault();
