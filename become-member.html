@@ -267,13 +267,35 @@
                     </div>
                 </div>
 
-                <label class="checkbox-wrapper reveal-text delay-200">
-                    <input type="checkbox" required>
-                    <span class="custom-check"></span>
-                    <span class="label-text">আমি ঘোষণা করছি যে উপরের সকল তথ্য সঠিক।</span>
-                </label>
+                <div class="registration-grid" style="margin-top: 2rem;">
+                    <!-- Digital Signature -->
+                    <div class="signature-container reveal-text delay-200" style="margin-bottom: 0;">
+                        <label class="form-label">আপনার ডিজিটাল স্বাক্ষর <span style="color: red;">*</span></label>
+                        <div class="signature-pad-wrapper" style="margin-bottom: 0;">
+                            <canvas id="signaturePad" style="background: #fff;"></canvas>
+                            <div class="signature-actions">
+                                <button type="button" id="clearSignature" class="btn-clear">
+                                    <i class="fas fa-trash-alt"></i> মুছুন
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="digital_sign" id="signatureInput" required>
+                        <div class="error-message" id="signatureError" style="margin-top: 0;">দয়া করে স্বাক্ষর প্রদান করুন।</div>
+                    </div>
 
-                <button type="submit" class="btn btn-primary reveal-text delay-300" style="width: 100%; margin-top: 2rem; padding: 1rem;">আবেদন জমা দিন</button>
+                    <div class="submission-actions reveal-text" style="margin-top: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label class="checkbox-wrapper reveal-text delay-200" style="margin-top: 0; align-items: flex-start;">
+                                <input type="checkbox" id="consent" required>
+                                <span class="custom-check" style="width: 20px; height: 20px;"></span>
+                                <span class="label-text" style="font-size: 0.85rem; line-height: 1.4;">আমি ঘোষণা করছি যে উপরের সকল তথ্য সঠিক এবং আমি শর্তাবলী মেনে চলছি।</span>
+                            </label>
+                            <div class="error-message" id="consentError" style="margin-top: 0;">দয়া করে সম্মতি দিন।</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary reveal-text delay-300" style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 8px; margin-top: 0;">আবেদন জমা দিন</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

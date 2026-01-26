@@ -383,12 +383,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Convert signature Base64 to PNG File
                     const signatureData = signatureInput.value;
                     if (signatureData) {
-                        const blob = await (await fetch(signatureData)).blob();
-                        formData.delete('signature'); // Remove base64 string
-                        formData.append('signature', blob, 'signature.png'); // Add as file
+                        try {
+                            const blob = await (await fetch(signatureData)).blob();
+                            formData.delete('digital_sign'); 
+                            formData.append('digital_sign', blob, 'signature.png'); 
+                        } catch (sigErr) {
+                            console.error("❌ Signature conversion failed:", sigErr);
+                        }
                     }
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/api/sub-agent-registration', {
+                    const response = await fetch('http://192.168.68.112:8001/api/sub-agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -464,6 +468,78 @@ document.addEventListener('DOMContentLoaded', () => {
     // Member Form Submission
     const memberForm = document.getElementById('memberForm');
     if (memberForm) {
+        // Signature Pad Logic
+        const canvas = document.getElementById('signaturePad');
+        const clearBtn = document.getElementById('clearSignature');
+        const signatureInput = document.getElementById('signatureInput');
+        let signatureDrawing = false;
+        
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            
+            const resizeCanvas = () => {
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                canvas.width = canvas.offsetWidth * ratio;
+                canvas.height = canvas.offsetHeight * ratio;
+                ctx.scale(ratio, ratio);
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000';
+            };
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const getPos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            };
+
+            const startDrawing = (e) => {
+                signatureDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            };
+
+            const draw = (e) => {
+                if (!signatureDrawing) return;
+                const pos = getPos(e);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                signatureInput.value = canvas.toDataURL();
+                // Remove error if drawing
+                const sigWrapper = canvas.closest('.signature-pad-wrapper');
+                const sigError = document.getElementById('signatureError');
+                if (sigWrapper) sigWrapper.style.borderColor = '';
+                if (sigError) sigError.style.display = 'none';
+            };
+
+            const stopDrawing = () => {
+                signatureDrawing = false;
+            };
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            window.addEventListener('mouseup', stopDrawing);
+
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+            canvas.addEventListener('touchend', stopDrawing);
+
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    signatureInput.value = '';
+                });
+            }
+        }
+
         memberForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -474,8 +550,14 @@ document.addEventListener('DOMContentLoaded', () => {
             let isValid = true;
             const requiredFields = memberForm.querySelectorAll('[required]');
             requiredFields.forEach(field => {
-                if (field.type === 'checkbox') {
-                    if (!field.checked) isValid = false;
+                if (field.id === 'consent') {
+                    const consentError = document.getElementById('consentError');
+                    if (!field.checked) {
+                        if (consentError) consentError.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        if (consentError) consentError.style.display = 'none';
+                    }
                 } else if (!field.value.trim()) {
                     field.classList.add('error');
                     isValid = false;
@@ -483,6 +565,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     field.classList.remove('error');
                 }
             });
+
+            // Signature validation
+            if (signatureInput && signatureInput.hasAttribute('required') && signatureInput.value === '') {
+                const sigWrapper = canvas.closest('.signature-pad-wrapper');
+                const sigError = document.getElementById('signatureError');
+                if (sigWrapper) sigWrapper.style.borderColor = 'var(--error)';
+                if (sigError) sigError.style.display = 'block';
+                isValid = false;
+            }
 
             if (!isValid) {
                 alert('দয়া করে সকল প্রয়োজনীয় তথ্য পূরণ করুন।');
@@ -495,8 +586,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // For member form, we use FormData because it includes a photo
                 const formData = new FormData(memberForm);
+
+                // Convert signature Base64 to PNG File
+                const signatureData = signatureInput.value;
+                if (signatureData) {
+                    try {
+                        const blob = await (await fetch(signatureData)).blob();
+                        formData.delete('digital_sign'); 
+                        formData.append('digital_sign', blob, 'signature.png'); 
+                    } catch (sigErr) {
+                        console.error("❌ Signature conversion failed:", sigErr);
+                    }
+                }
                 
-                const response = await fetch('https://admin.mrpfoundation.net/api/member-registration', {
+                const response = await fetch('http://192.168.68.112:8001/api/member-registration', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -514,6 +617,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         alert('আপনার আবেদন সফলভাবে জমা দেওয়া হয়েছে!');
                     }
                     memberForm.reset();
+                    // Reset canvas
+                    if (canvas) {
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    }
                     // Reset photo preview if exists
                     const previewImg = document.getElementById('previewImg');
                     const uploadPlaceholder = document.querySelector('.upload-placeholder');
@@ -594,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('https://admin.mrpfoundation.net/api/contact', {
+                const response = await fetch('http://192.168.68.112:8001/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
