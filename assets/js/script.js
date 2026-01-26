@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('http://192.168.68.112:8001/api/agent-registration', {
+                    const response = await fetch('https://mrpfoundation.net/api/agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('http://192.168.68.112:8001/api/sub-agent-registration', {
+                    const response = await fetch('https://mrpfoundation.net/api/sub-agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                const response = await fetch('http://192.168.68.112:8001/api/member-registration', {
+                const response = await fetch('https://mrpfoundation.net/api/member-registration', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('http://192.168.68.112:8001/api/contact', {
+                const response = await fetch('https://mrpfoundation.net/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
