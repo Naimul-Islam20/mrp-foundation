@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/public/api/agent-registration', {
+                    const response = await fetch('https://admin.mrpfoundation.net/api/agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -419,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/public/api/sub-agent-registration', {
+                    const response = await fetch('https://admin.mrpfoundation.net/api/sub-agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                const response = await fetch('https://admin.mrpfoundation.net/public/api/member-registration', {
+                const response = await fetch('https://admin.mrpfoundation.net/api/member-registration', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -665,7 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('https://admin.mrpfoundation.net/public/api/contact', {
+                const response = await fetch('https://admin.mrpfoundation.net/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
