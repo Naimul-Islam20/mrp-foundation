@@ -70,10 +70,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const resizeCanvas = () => {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            // Get dimensions from computed style or fallback
-            const width = canvas.offsetWidth || 300;
-            const height = canvas.offsetHeight || 150;
             
+            // Get dimensions - use a slightly more robust check
+            let width = canvas.offsetWidth;
+            let height = canvas.offsetHeight;
+
+            // Fallback if the element isn't fully rendered yet
+            if (width === 0 || height === 0) {
+                const parent = canvas.parentElement;
+                width = parent.clientWidth || 300;
+                height = 200; // Force a default height if it's 0
+            }
+            
+            canvas.style.display = 'block';
             canvas.width = width * ratio;
             canvas.height = height * ratio;
             ctx.scale(ratio, ratio);
@@ -86,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = "#fff";
             ctx.fillRect(0, 0, width, height);
             
-            // If there's already data in input, redraw it (optional, but good for persistence)
+            // Redraw if data exists
             if (signatureInput && signatureInput.value) {
                 const img = new Image();
                 img.onload = () => ctx.drawImage(img, 0, 0, width, height);
@@ -94,8 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Delay initialization to ensure layout is ready (fixes issues with reveal animations)
-        setTimeout(resizeCanvas, 200);
+        // Try initializing multiple times to handle animations/slow rendering
+        setTimeout(resizeCanvas, 100);
+        setTimeout(resizeCanvas, 500); 
+        setTimeout(resizeCanvas, 1000); 
+
         window.addEventListener('resize', resizeCanvas);
 
         const getPos = (e) => {
@@ -103,26 +115,35 @@ document.addEventListener('DOMContentLoaded', () => {
             const clientX = e.clientX || (e.touches && e.touches[0].clientX);
             const clientY = e.clientY || (e.touches && e.touches[0].clientY);
             return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
+                x: (clientX - rect.left) * (canvas.width / (rect.width * ratio())),
+                y: (clientY - rect.top) * (canvas.height / (rect.height * ratio()))
             };
+            
+            function ratio() { return Math.max(window.devicePixelRatio || 1, 1); }
+        };
+
+        // Simplified position for drawing
+        const getSimplePos = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+            const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+            return { x, y };
         };
 
         const startDrawing = (e) => {
             signatureDrawing = true;
-            const pos = getPos(e);
+            const pos = getSimplePos(e);
             ctx.beginPath();
             ctx.moveTo(pos.x, pos.y);
         };
 
         const draw = (e) => {
             if (!signatureDrawing) return;
-            const pos = getPos(e);
+            const pos = getSimplePos(e);
             ctx.lineTo(pos.x, pos.y);
             ctx.stroke();
             signatureInput.value = canvas.toDataURL();
             
-            // Remove error if drawing
             const sigWrapper = canvas.closest('.signature-pad-wrapper');
             const sigError = document.getElementById('signatureError');
             if (sigWrapper) sigWrapper.style.borderColor = '';
@@ -133,20 +154,28 @@ document.addEventListener('DOMContentLoaded', () => {
             signatureDrawing = false;
         };
 
+        // Web Mouse Events
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
         window.addEventListener('mouseup', stopDrawing);
 
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); }, { passive: false });
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, { passive: false });
+        // Mobile Touch Events - Essential for Safari/Chrome on iOS
+        canvas.addEventListener('touchstart', (e) => { 
+            const pos = getSimplePos(e);
+            startDrawing(e); 
+        }, { passive: false });
+        
+        canvas.addEventListener('touchmove', (e) => { 
+            e.preventDefault(); 
+            draw(e); 
+        }, { passive: false });
+        
         canvas.addEventListener('touchend', stopDrawing);
 
         if (clearBtn) {
             clearBtn.addEventListener('click', () => {
                 ctx.fillStyle = "#fff";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Standard clear
-                ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill white again
                 signatureInput.value = '';
             });
         }
@@ -211,6 +240,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const formData = new FormData(agentForm);
                     
+                    // Manually handle multiple photo_up files to ensure array format
+                    const photoInput = agentForm.querySelector('#agentPhotos');
+                    if (photoInput && photoInput.files.length > 0) {
+                        formData.delete('photo_up[]'); // Clear existing if any
+                        for (let i = 0; i < photoInput.files.length; i++) {
+                            formData.append('photo_up[]', photoInput.files[i]);
+                        }
+                    }
+
+                    // Manually handle bank_check multiple files if any
+                    const bankCheckInput = agentForm.querySelector('#bankChecks');
+                    if (bankCheckInput && bankCheckInput.files.length > 0) {
+                        formData.delete('bank_check'); 
+                        for (let i = 0; i < bankCheckInput.files.length; i++) {
+                            formData.append('bank_check', bankCheckInput.files[i]);
+                        }
+                    }
+                    
                     // Convert signature Base64 to PNG File
                     const signatureData = signatureInput.value;
                     if (signatureData) {
@@ -248,7 +295,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
                         if (result.errors) {
-                            const errorDetails = Object.values(result.errors).flat().join('\n');
+                            // Detailed breakdown: Field Name -> Message
+                            const errorDetails = Object.entries(result.errors).map(([field, msgs]) => {
+                                return `[${field}] : ${msgs.join(', ')}`;
+                            }).join('\n');
                             errorMsg = errorDetails;
                         }
                         
@@ -256,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const errorModal = document.getElementById('errorModal');
                         const errorDetailsBox = document.getElementById('errorDetails');
                         if (errorModal && errorDetailsBox) {
-                            errorDetailsBox.textContent = errorMsg;
+                            errorDetailsBox.innerText = errorMsg;
                             errorModal.classList.add('active');
                         } else {
                             alert('ত্রুটিঃ\n' + errorMsg);
@@ -339,6 +389,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const formData = new FormData(subAgentForm);
 
+                    // Manually handle multiple photo_up files to ensure array format
+                    const subPhotoInput = subAgentForm.querySelector('#agentPhotos');
+                    if (subPhotoInput && subPhotoInput.files.length > 0) {
+                        formData.delete('photo_up[]'); 
+                        for (let i = 0; i < subPhotoInput.files.length; i++) {
+                            formData.append('photo_up[]', subPhotoInput.files[i]);
+                        }
+                    }
+
+                    // Manually handle bank_check multiple files if any
+                    const subBankCheckInput = subAgentForm.querySelector('#bankChecks');
+                    if (subBankCheckInput && subBankCheckInput.files.length > 0) {
+                        formData.delete('bank_check'); 
+                        for (let i = 0; i < subBankCheckInput.files.length; i++) {
+                            formData.append('bank_check', subBankCheckInput.files[i]);
+                        }
+                    }
+
                     // Convert signature Base64 to PNG File
                     const signatureData = signatureInput.value;
                     if (signatureData) {
@@ -375,14 +443,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
                         if (result.errors) {
-                            const errorDetails = Object.values(result.errors).flat().join('\n');
+                            const errorDetails = Object.entries(result.errors).map(([field, msgs]) => {
+                                return `[${field}] : ${msgs.join(', ')}`;
+                            }).join('\n');
                             errorMsg = errorDetails;
                         }
                         
                         const errorModal = document.getElementById('errorModal');
                         const errorDetailsBox = document.getElementById('errorDetails');
                         if (errorModal && errorDetailsBox) {
-                            errorDetailsBox.textContent = errorMsg;
+                            errorDetailsBox.innerText = errorMsg;
                             errorModal.classList.add('active');
                         } else {
                             alert('ত্রুটিঃ\n' + errorMsg);
@@ -521,7 +591,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
                     if (result.errors) {
-                        const errorDetails = Object.values(result.errors).flat().join('\n');
+                        const errorDetails = Object.entries(result.errors).map(([field, msgs]) => {
+                            return `[${field}] : ${msgs.join(', ')}`;
+                        }).join('\n');
                         errorMsg = errorDetails;
                     }
                     
@@ -529,7 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const errorModal = document.getElementById('errorModal');
                     const errorDetailsBox = document.getElementById('errorDetails');
                     if (errorModal && errorDetailsBox) {
-                        errorDetailsBox.textContent = errorMsg;
+                        errorDetailsBox.innerText = errorMsg;
                         errorModal.classList.add('active');
                     } else {
                         alert('ত্রুটিঃ\n' + errorMsg);
@@ -615,14 +687,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
                     if (result.errors) {
-                        const errorDetails = Object.values(result.errors).flat().join('\n');
+                        const errorDetails = Object.entries(result.errors).map(([field, msgs]) => {
+                            return `[${field}] : ${msgs.join(', ')}`;
+                        }).join('\n');
                         errorMsg = errorDetails;
                     }
                     
                     const errorModal = document.getElementById('errorModal');
                     const errorDetailsBox = document.getElementById('errorDetails');
                     if (errorModal && errorDetailsBox) {
-                        errorDetailsBox.textContent = errorMsg;
+                        errorDetailsBox.innerText = errorMsg;
                         errorModal.classList.add('active');
                     } else {
                         alert('ত্রুটিঃ\n' + errorMsg);
