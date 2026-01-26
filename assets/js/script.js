@@ -159,6 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         agentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const canvas = document.getElementById('signaturePad');
+            const signatureInput = document.getElementById('signatureInput');
             
             let isValid = true;
             const controls = agentForm.querySelectorAll('.form-control, #consent');
@@ -221,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('https://mrpfoundation.net/api/agent-registration', {
+                    const response = await fetch('http://192.168.68.112:8001/api/agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -292,6 +294,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         subAgentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const canvas = document.getElementById('signaturePad');
+            const signatureInput = document.getElementById('signatureInput');
             
             let isValid = true;
             const controls = subAgentForm.querySelectorAll('.form-control, #consent');
@@ -347,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('https://mrpfoundation.net/api/sub-agent-registration', {
+                    const response = await fetch('http://192.168.68.112:8001/api/sub-agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -427,6 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         memberForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const canvas = document.getElementById('signaturePad');
+            const signatureInput = document.getElementById('signatureInput');
             
             const submitBtn = memberForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.textContent;
@@ -484,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                const response = await fetch('https://mrpfoundation.net/api/member-registration', {
+                const response = await fetch('http://192.168.68.112:8001/api/member-registration', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -587,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('https://mrpfoundation.net/api/contact', {
+                const response = await fetch('http://192.168.68.112:8001/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
