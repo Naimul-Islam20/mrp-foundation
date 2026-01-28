@@ -1,12 +1,18 @@
 <?php
 
-// Fix for Laravel on Vercel
-// Ensure we can write to /tmp
+// Laravel on Vercel initialization script
 $storagePath = '/tmp/storage/framework';
-foreach (['views', 'sessions', 'cache'] as $path) {
-    if (!is_dir($storagePath . '/' . $path)) {
-        mkdir($storagePath . '/' . $path, 0755, true);
+$paths = [
+    $storagePath . '/views',
+    $storagePath . '/sessions',
+    $storagePath . '/cache',
+];
+
+foreach ($paths as $path) {
+    if (!is_dir($path)) {
+        mkdir($path, 0755, true);
     }
 }
 
+// Ensure the application bootstraps correctly
 require __DIR__ . '/../public/index.php';
