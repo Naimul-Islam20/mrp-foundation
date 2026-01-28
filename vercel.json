@@ -1,10 +1,9 @@
 {
     "version": 2,
-    "framework": null,
     "builds": [
         {
-            "src": "public/index.php",
-            "use": "@vercel/php"
+            "src": "api/index.php",
+            "use": "vercel-php@0.6.0"
         },
         {
             "src": "public/**",
@@ -22,7 +21,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "public/index.php"
+            "dest": "api/index.php"
         }
     ],
     "env": {
@@ -35,7 +34,6 @@
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "VIEW_COMPILED_PATH": "/tmp",
         "SESSION_DRIVER": "cookie",
-        "LOG_CHANNEL": "stderr",
-        "DB_CONNECTION": "mysql"
+        "LOG_CHANNEL": "stderr"
     }
 }
