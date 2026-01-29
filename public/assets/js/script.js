@@ -750,39 +750,30 @@ document.addEventListener('DOMContentLoaded', () => {
         .footer-widget h4, .footer-links li, .newsletter-form, .newsletter-form p,
         .form-group, .page-header h1, .page-header p,
         .req-card, .req-title, .req-list li, .highlight-box, .text-center h3, .text-center .btn,
+        .partner-card, .benefit-card, .job-card, .benefit-item,
         .reveal-text
     `);
     
     revealElements.forEach(el => {
         el.classList.add('reveal-text');
         
-        // Skip automatic delay if manual delay is set in HTML
         const hasManualDelay = Array.from(el.classList).some(cls => cls.startsWith('delay-'));
         
         if (!hasManualDelay) {
-            // Add staggered delays for regular lists
             if (el.tagName === 'LI') {
                 const index = Array.from(el.parentNode.children).indexOf(el);
-                if (index < 10) {
+                if (index < 12) {
                     el.style.transitionDelay = `${(index + 1) * 0.1}s`;
                 }
             }
             
-            // Add staggered delays for social links
-            if (el.classList.contains('social-link')) {
+            if (el.classList.contains('social-link') || el.classList.contains('contact-item')) {
                 const index = Array.from(el.parentNode.children).indexOf(el);
                 el.style.transitionDelay = `${(index + 1) * 0.1}s`;
             }
 
-            // Add staggered delays for contact items
-            if (el.classList.contains('contact-item')) {
-                const index = Array.from(el.parentNode.children).indexOf(el);
-                el.style.transitionDelay = `${(index + 1) * 0.1}s`;
-            }
-
-            // Add staggered delays for Hero and About text content
             const parent = el.parentElement;
-            if (parent && (parent.classList.contains('hero-text') || parent.classList.contains('about-content'))) {
+            if (parent && (parent.classList.contains('hero-text') || parent.classList.contains('about-content') || parent.classList.contains('benefits-grid') || parent.classList.contains('partner-grid') || parent.classList.contains('jobs-grid'))) {
                  const index = Array.from(parent.children).indexOf(el);
                  el.style.transitionDelay = `${(index + 1) * 0.15}s`;
             }

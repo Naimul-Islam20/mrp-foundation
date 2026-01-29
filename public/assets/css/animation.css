@@ -1,16 +1,18 @@
-/* Scroll Animation Styles */
+/* Global Scroll Animation Styles */
 .reveal-text {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother and slower */
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, opacity;
 }
 
 .reveal-text.active {
-  opacity: 1;
-  transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* Staggered transition delays for children if needed */
+/* Base delays for manual use */
 .delay-100 { transition-delay: 0.1s; }
 .delay-200 { transition-delay: 0.2s; }
 .delay-300 { transition-delay: 0.3s; }
@@ -20,4 +22,4 @@
 .delay-700 { transition-delay: 0.7s; }
 .delay-800 { transition-delay: 0.8s; }
 .delay-900 { transition-delay: 0.9s; }
-.delay-1000 { transition-delay: 1s; }
+.delay-1000 { transition-delay: 1.0s; }
