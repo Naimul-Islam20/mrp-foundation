@@ -5,7 +5,7 @@
             <div class="footer-about reveal-text">
                 <h3><i class="fas fa-hands-helping"></i> MRP Foundation</h3>
                 <p>মানবতার সেবায় নিবেদিত একটি প্রতিষ্ঠান। আমরা বিশ্বাস করি একত্রিত প্রচেষ্টাই পারে সমাজকে বদলে দিতে। আমাদের সাথে যুক্ত হয়ে আপনিও অবদান রাখতে পারেন।</p>
-                <p style="margin-top: 1rem; font-size: 0.9rem; color: #a0aec0">
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: #a0aec0" id="footer-address">
                     <i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px"></i>
                     হাউজ #১/এ, রোড #৬, সেক্টর #৩, উত্তরা মডেল টাউন, উত্তরা, ঢাকা-১২৩০
                 </p>

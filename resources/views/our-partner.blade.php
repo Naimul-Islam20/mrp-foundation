@@ -68,7 +68,7 @@
           </div>
 
           <!-- Partner 4 -->
-          <div class="partner-card reveal-text delay-400">
+          <div class="partner-card reveal-text delay-100">
             <div class="partner-logo">
               <i class="fas fa-heartbeat"></i>
             </div>
@@ -80,7 +80,7 @@
           </div>
 
           <!-- Partner 5 -->
-          <div class="partner-card reveal-text delay-500">
+          <div class="partner-card reveal-text delay-200">
             <div class="partner-logo">
               <i class="fas fa-chart-line"></i>
             </div>
@@ -92,7 +92,7 @@
           </div>
 
           <!-- Partner 6 -->
-          <div class="partner-card reveal-text delay-600">
+          <div class="partner-card reveal-text delay-300">
             <div class="partner-logo">
               <i class="fas fa-users"></i>
             </div>

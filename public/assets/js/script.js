@@ -4,6 +4,163 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Fetch and Update 'Our Details' from API
+    async function fetchOurDetails() {
+        try {
+
+            const response = await fetch('https://admin.mrpfoundation.net/api/our-details', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const result = await response.json();
+
+
+            if (result.status && result.data && result.data.length > 0) {
+                const apiData = result.data[0];
+                
+                // Map fields from API
+                const address = apiData.our_address || '';
+                // Split phone by comma or replace with <br>
+                const phone = apiData.our_phone ? apiData.our_phone.split(',').join('<br>') : '';
+                const email = apiData.our_email || '';
+
+                // Update Contact Page Elements
+                const contactAddr = document.getElementById('contact-address');
+                const contactPhone = document.getElementById('contact-phone');
+                const contactEmail = document.getElementById('contact-email');
+
+                if (contactAddr) contactAddr.innerHTML = address;
+                if (contactPhone) contactPhone.innerHTML = phone;
+                if (contactEmail) contactEmail.innerText = email;
+
+                // Update Home Page Elements
+                const homeAddr = document.getElementById('home-address');
+                const homePhone = document.getElementById('home-phone');
+                const homeEmail = document.getElementById('home-email');
+
+                if (homeAddr) homeAddr.innerHTML = address;
+                if (homePhone) homePhone.innerHTML = phone;
+                if (homeEmail) homeEmail.innerText = email;
+
+                // Update Footer
+                const footerAddr = document.getElementById('footer-address');
+                if (footerAddr) {
+                    footerAddr.innerHTML = `<i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px"></i> ${address}`;
+                }
+
+                // Update Social Links if any
+                const updateSocialLink = (iconClass, link) => {
+                    if (!link) return;
+                    document.querySelectorAll(`.social-link i.${iconClass}`).forEach(icon => {
+                        const anchor = icon.closest('a');
+                        if (anchor) anchor.href = link;
+                    });
+                };
+
+                updateSocialLink('fa-facebook-f', apiData.fb_link);
+                updateSocialLink('fa-facebook', apiData.fb_link);
+                updateSocialLink('fa-twitter', apiData.twitter_link);
+                updateSocialLink('fa-instagram', apiData.insta_link);
+                updateSocialLink('fa-linkedin-in', apiData.linkedin_link);
+                updateSocialLink('fa-linkedin', apiData.linkedin_link);
+            }
+
+        } catch (error) {
+
+        }
+    }
+
+    // Call it immediately
+    fetchOurDetails();
+
+    // Fetch and Populate 'Vacancies'
+    async function fetchVacancies() {
+        const jobsContainer = document.getElementById('jobs-container');
+        const positionSelect = document.getElementById('position');
+        if (!jobsContainer && !positionSelect) return;
+
+        try {
+
+            const response = await fetch('https://admin.mrpfoundation.net/api/vacancies');
+            const result = await response.json();
+
+
+            if (result.status && result.data) {
+                // Populate Jobs Grid
+                if (jobsContainer) {
+                    if (result.data.length === 0) {
+                        jobsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 3rem;"><p>বর্তমানে কোনো খালি পদ নেই।</p></div>';
+                    } else {
+                        jobsContainer.innerHTML = ''; // Clear loader
+                        
+                        result.data.forEach((job, index) => {
+                            const delay = (index + 1) * 100;
+                            const deadline = new Date(job.last_date_of_apply);
+                            const formattedDate = deadline.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long' });
+
+                            const jobCard = `
+                                <div class="job-card reveal-text" style="transition-delay: ${delay}ms">
+                                    <div class="job-info">
+                                        <h3 class="job-title">${job.title}</h3>
+                                        <div class="job-meta">
+                                            <span class="job-meta-item">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                ${job.workplace}
+                                            </span>
+                                            <span class="job-meta-item">
+                                                <i class="fas fa-briefcase"></i>
+                                                ${job.worktime}
+                                            </span>
+                                            <span class="job-meta-item">
+                                                <i class="fas fa-layer-group"></i>
+                                                ${job.experience}
+                                            </span>
+                                        </div>
+                                        <p class="job-desc">${job.description}</p>
+                                        <div class="job-tags">
+                                            ${job.skills.map(skill => `<span class="job-tag">${skill}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                    <div class="job-action">
+                                        <button class="apply-btn" onclick="scrollToForm()">আবেদন করুন</button>
+                                        <span class="job-deadline">শেষ তারিখ: ${formattedDate}</span>
+                                    </div>
+                                </div>
+                            `;
+                            jobsContainer.insertAdjacentHTML('beforeend', jobCard);
+                            
+                            // Re-observe for animation
+                            const newCard = jobsContainer.lastElementChild;
+                            if (typeof observer !== 'undefined') observer.observe(newCard);
+                        });
+                    }
+                }
+
+                // Populate Position Dropdown
+                if (positionSelect) {
+                    positionSelect.innerHTML = '<option value="">পদ নির্বাচন করুন</option>';
+                    result.data.forEach(job => {
+                        const option = document.createElement('option');
+                        option.value = job.title; // Using title as value
+                        option.textContent = job.title;
+                        positionSelect.appendChild(option);
+                    });
+                }
+            }
+        } catch (error) {
+
+            if (jobsContainer) {
+                jobsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 3rem;"><p style="color: red;">সার্ভার থেকে তথ্য পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p></div>';
+            }
+        }
+    }
+    fetchVacancies();
+
     // Mobile Menu Toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -266,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             formData.delete('digital_sign'); 
                             formData.append('digital_sign', blob, 'signature.png'); 
                         } catch (sigErr) {
-                            console.error("❌ Signature conversion failed:", sigErr);
+
                         }
                     }
                     
@@ -313,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 } catch (error) {
-                    console.error('Submission Error:', error);
+
                     const errorModal = document.getElementById('errorModal');
                     const errorDetailsBox = document.getElementById('errorDetails');
                     if (errorModal && errorDetailsBox) {
@@ -459,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 } catch (error) {
-                    console.error('Submission Error:', error);
+
                     const errorModal = document.getElementById('errorModal');
                     const errorDetailsBox = document.getElementById('errorDetails');
                     if (errorModal && errorDetailsBox) {
@@ -556,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         formData.delete('digital_sign'); 
                         formData.append('digital_sign', blob, 'signature.png'); 
                     } catch (sigErr) {
-                        console.error("❌ Signature conversion failed:", sigErr);
+
                     }
                 }
                 
@@ -608,7 +765,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             } catch (error) {
-                console.error('Member Submission Error:', error);
+
                 const errorModal = document.getElementById('errorModal');
                 const errorDetailsBox = document.getElementById('errorDetails');
                 if (errorModal && errorDetailsBox) {
@@ -703,7 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             } catch (error) {
-                console.error('Contact Submission Error:', error);
+
                 const errorModal = document.getElementById('errorModal');
                 const errorDetailsBox = document.getElementById('errorDetails');
                 if (errorModal && errorDetailsBox) {
@@ -719,6 +876,102 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         contactForm.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', () => {
+                input.classList.remove('error');
+            });
+        });
+    }
+
+    // Job Application Form Submission
+    const jobApplicationForm = document.getElementById('jobApplicationForm');
+    if (jobApplicationForm) {
+        jobApplicationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = jobApplicationForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.querySelector('.btn-text').textContent;
+            
+            // Validation
+            let isValid = true;
+            const requiredFields = jobApplicationForm.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+
+            if (!isValid) {
+                alert('দয়া করে সকল প্রয়োজনীয় তথ্য পূরণ করুন।');
+                return;
+            }
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.querySelector('.btn-text').textContent = 'প্রসেসিং হচ্ছে...';
+                
+                const formData = new FormData(jobApplicationForm);
+                
+                const response = await fetch('https://admin.mrpfoundation.net/api/apply-for-vacancy', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                        // No Content-Type header needed for FormData; browser sets it with boundary
+                    },
+                    body: formData
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    const modal = document.getElementById('successModal');
+                    if (modal) {
+                        modal.classList.add('active');
+                    } else {
+                        alert('আপনার আবেদন সফলভাবে জমা হয়েছে!');
+                    }
+                    jobApplicationForm.reset();
+                    // Reset file input label if exists
+                    const fileLabel = jobApplicationForm.querySelector('.file-input-label');
+                    if (fileLabel) fileLabel.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> ফাইল নির্বাচন করুন';
+                } else {
+                    let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
+                    if (result.errors) {
+                        const errorDetails = Object.entries(result.errors).map(([field, msgs]) => {
+                            return `[${field}] : ${msgs.join(', ')}`;
+                        }).join('\n');
+                        errorMsg = errorDetails;
+                    }
+                    
+                    const errorModal = document.getElementById('errorModal');
+                    const errorDetailsBox = document.getElementById('errorDetails');
+                    if (errorModal && errorDetailsBox) {
+                        errorDetailsBox.innerText = errorMsg;
+                        errorModal.classList.add('active');
+                    } else {
+                        alert('ত্রুটিঃ\n' + errorMsg);
+                    }
+                }
+            } catch (error) {
+
+                const errorModal = document.getElementById('errorModal');
+                const errorDetailsBox = document.getElementById('errorDetails');
+                if (errorModal && errorDetailsBox) {
+                    errorDetailsBox.textContent = error.message;
+                    errorModal.classList.add('active');
+                } else {
+                    alert('ত্রুটিঃ ' + error.message);
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.querySelector('.btn-text').textContent = originalBtnText;
+            }
+        });
+
+        // Real-time validation removal
+        jobApplicationForm.querySelectorAll('.form-control, input, select, textarea').forEach(input => {
             input.addEventListener('input', () => {
                 input.classList.remove('error');
             });

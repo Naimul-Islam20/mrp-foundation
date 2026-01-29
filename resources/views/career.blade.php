@@ -54,7 +54,7 @@
                     </p>
                 </div>
 
-                <div class="benefit-card reveal-text delay-400">
+                <div class="benefit-card reveal-text delay-100">
                     <div class="benefit-icon">
                         <i class="fas fa-users"></i>
                     </div>
@@ -64,7 +64,7 @@
                     </p>
                 </div>
 
-                <div class="benefit-card reveal-text delay-500">
+                <div class="benefit-card reveal-text delay-200">
                     <div class="benefit-icon">
                         <i class="fas fa-clock"></i>
                     </div>
@@ -74,7 +74,7 @@
                     </p>
                 </div>
 
-                <div class="benefit-card reveal-text delay-600">
+                <div class="benefit-card reveal-text delay-300">
                     <div class="benefit-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
@@ -95,136 +95,11 @@
                 <p class="reveal-text delay-100">আপনার উপযুক্ত পদে আবেদন করুন</p>
             </div>
 
-            <div class="jobs-grid">
-                <!-- Job 1 -->
-                <div class="job-card reveal-text delay-100">
-                    <div class="job-info">
-                        <h3 class="job-title">প্রোগ্রাম ম্যানেজার</h3>
-                        <div class="job-meta">
-                            <span class="job-meta-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                ঢাকা, বাংলাদেশ
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-briefcase"></i>
-                                পূর্ণকালীন
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-layer-group"></i>
-                                ৩-৫ বছর অভিজ্ঞতা
-                            </span>
-                        </div>
-                        <p class="job-desc">
-                            সমাজসেবা প্রকল্প পরিচালনা, টিম ম্যানেজমেন্ট এবং স্টেকহোল্ডার সমন্বয়ের দায়িত্ব। শিক্ষা ও স্বাস্থ্য খাতে অভিজ্ঞতা থাকলে অগ্রাধিকার।
-                        </p>
-                        <div class="job-tags">
-                            <span class="job-tag">Project Management</span>
-                            <span class="job-tag">Leadership</span>
-                            <span class="job-tag">NGO</span>
-                        </div>
-                    </div>
-                    <div class="job-action">
-                        <button class="apply-btn" onclick="scrollToForm()">আবেদন করুন</button>
-                        <span class="job-deadline">শেষ তারিখ: ৩১ জানুয়ারি</span>
-                    </div>
-                </div>
-
-                <!-- Job 2 -->
-                <div class="job-card reveal-text delay-200">
-                    <div class="job-info">
-                        <h3 class="job-title">ফিল্ড অফিসার</h3>
-                        <div class="job-meta">
-                            <span class="job-meta-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                সারাদেশ
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-briefcase"></i>
-                                পূর্ণকালীন
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-layer-group"></i>
-                                ১-৩ বছর অভিজ্ঞতা
-                            </span>
-                        </div>
-                        <p class="job-desc">
-                            মাঠ পর্যায়ে প্রকল্প বাস্তবায়ন, সুবিধাভোগী চিহ্নিতকরণ এবং মনিটরিং। গ্রামীণ এলাকায় কাজের অভিজ্ঞতা প্রয়োজন।
-                        </p>
-                        <div class="job-tags">
-                            <span class="job-tag">Field Work</span>
-                            <span class="job-tag">Community Development</span>
-                        </div>
-                    </div>
-                    <div class="job-action">
-                        <button class="apply-btn" onclick="scrollToForm()">আবেদন করুন</button>
-                        <span class="job-deadline">শেষ তারিখ: ২৮ জানুয়ারি</span>
-                    </div>
-                </div>
-
-                <!-- Job 3 -->
-                <div class="job-card reveal-text delay-300">
-                    <div class="job-info">
-                        <h3 class="job-title">অ্যাকাউন্টস অফিসার</h3>
-                        <div class="job-meta">
-                            <span class="job-meta-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                ঢাকা
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-briefcase"></i>
-                                পূর্ণকালীন
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-layer-group"></i>
-                                ২-৪ বছর অভিজ্ঞতা
-                            </span>
-                        </div>
-                        <p class="job-desc">
-                            আর্থিক হিসাব রক্ষণাবেক্ষণ, বাজেট প্রস্তুতি এবং অডিট সহায়তা। এনজিও অ্যাকাউন্টিং অভিজ্ঞতা থাকলে অগ্রাধিকার।
-                        </p>
-                        <div class="job-tags">
-                            <span class="job-tag">Accounting</span>
-                            <span class="job-tag">Finance</span>
-                            <span class="job-tag">Audit</span>
-                        </div>
-                    </div>
-                    <div class="job-action">
-                        <button class="apply-btn" onclick="scrollToForm()">আবেদন করুন</button>
-                        <span class="job-deadline">শেষ তারিখ: ১৫ ফেব্রুয়ারি</span>
-                    </div>
-                </div>
-
-                <!-- Job 4 -->
-                <div class="job-card reveal-text delay-400">
-                    <div class="job-info">
-                        <h3 class="job-title">কমিউনিকেশন অফিসার</h3>
-                        <div class="job-meta">
-                            <span class="job-meta-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                ঢাকা
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-briefcase"></i>
-                                পূর্ণকালীন
-                            </span>
-                            <span class="job-meta-item">
-                                <i class="fas fa-layer-group"></i>
-                                ২-৩ বছর অভিজ্ঞতা
-                            </span>
-                        </div>
-                        <p class="job-desc">
-                            সোশ্যাল মিডিয়া ম্যানেজমেন্ট, কন্টেন্ট তৈরি এবং জনসংযোগ। ডিজিটাল মার্কেটিং এবং গ্রাফিক ডিজাইন দক্ষতা প্রয়োজন।
-                        </p>
-                        <div class="job-tags">
-                            <span class="job-tag">Social Media</span>
-                            <span class="job-tag">Content Writing</span>
-                            <span class="job-tag">PR</span>
-                        </div>
-                    </div>
-                    <div class="job-action">
-                        <button class="apply-btn" onclick="scrollToForm()">আবেদন করুন</button>
-                        <span class="job-deadline">শেষ তারিখ: ১০ ফেব্রুয়ারি</span>
-                    </div>
+            <div class="jobs-grid" id="jobs-container">
+                <!-- Jobs will be loaded here from API -->
+                <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--secondary-color); margin-bottom: 1rem;"></i>
+                    <p>পদসমূহ লোড হচ্ছে...</p>
                 </div>
             </div>
         </div>
@@ -238,64 +113,80 @@
                 <p class="reveal-text delay-100">নিচের ফর্মটি পূরণ করে আবেদন করুন</p>
             </div>
 
-            <form class="application-form reveal-text delay-200" onsubmit="event.preventDefault(); alert('আপনার আবেদন সফলভাবে জমা হয়েছে!');">
+            <form id="jobApplicationForm" class="application-form reveal-text delay-200">
                 <div class="form-group">
                     <label for="fullName">পূর্ণ নাম *</label>
-                    <input type="text" id="fullName" required>
+                    <input type="text" id="fullName" name="full_name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">ইমেইল *</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">মোবাইল নম্বর *</label>
-                    <input type="tel" id="phone" required>
+                    <input type="tel" id="phone" name="mobile_no" required>
                 </div>
 
                 <div class="form-group">
                     <label for="position">আবেদনকৃত পদ *</label>
-                    <select id="position" required>
+                    <select id="position" name="apply_for_post" required>
                         <option value="">পদ নির্বাচন করুন</option>
-                        <option value="program-manager">প্রোগ্রাম ম্যানেজার</option>
-                        <option value="field-officer">ফিল্ড অফিসার</option>
-                        <option value="accounts-officer">অ্যাকাউন্টস অফিসার</option>
-                        <option value="communication-officer">কমিউনিকেশন অফিসার</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="experience">কাজের অভিজ্ঞতা (বছর) *</label>
-                    <input type="number" id="experience" min="0" required>
+                    <input type="number" id="experience" name="experience" min="0" required>
                 </div>
 
                 <div class="form-group">
                     <label for="education">শিক্ষাগত যোগ্যতা *</label>
-                    <input type="text" id="education" placeholder="যেমন: স্নাতক (সমাজবিজ্ঞান)" required>
+                    <input type="text" id="education" name="educational_qualifications" placeholder="যেমন: স্নাতক (সমাজবিজ্ঞান)" required>
                 </div>
 
                 <div class="form-group">
                     <label for="coverLetter">কভার লেটার *</label>
-                    <textarea id="coverLetter" placeholder="কেন আপনি এই পদের জন্য উপযুক্ত তা সংক্ষেপে লিখুন..." required></textarea>
+                    <textarea id="coverLetter" name="cover_letter" placeholder="কেন আপনি এই পদের জন্য উপযুক্ত তা সংক্ষেপে লিখুন..." required></textarea>
                 </div>
 
                 <div class="form-group">
                     <label>সিভি আপলোড করুন (PDF) *</label>
                     <div class="file-input-wrapper">
-                        <input type="file" id="resume" accept=".pdf" required>
+                        <input type="file" id="resume" name="cv_upload" accept=".pdf" required>
                         <label for="resume" class="file-input-label">
                             <i class="fas fa-cloud-upload-alt"></i> ফাইল নির্বাচন করুন
                         </label>
                     </div>
                 </div>
 
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i> আবেদন জমা দিন
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> <span class="btn-text">আবেদন জমা দিন</span>
                 </button>
             </form>
         </div>
     </section>
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="success-modal">
+            <div class="success-icon"><i class="fas fa-check"></i></div>
+            <h3>ধন্যবাদ!</h3>
+            <p>আপনার আবেদনটি সফলভাবে জমা হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।</p>
+            <button class="btn-success" onclick="document.getElementById('successModal').classList.remove('active')">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="error-modal">
+            <div class="error-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>আবেদন জমা দেওয়া যায়নি</h3>
+            <p style="margin-bottom: 10px;">নিচের ত্রুটিগুলো সমাধান করে পুনরায় চেষ্টা করুন:</p>
+            <div class="error-details-box" id="errorDetails" style="background: #fff5f5; border: 1px solid #feb2b2; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; text-align: left; max-height: 200px; overflow-y: auto; color: #c53030; user-select: all;"></div>
+            <button class="btn-error-close" onclick="document.getElementById('errorModal').classList.remove('active')" style="margin-top: 20px; width: 100%; padding: 12px; background: #e53e3e; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">বন্ধ করুন</button>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')

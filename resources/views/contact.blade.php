@@ -29,7 +29,7 @@
                         </div>
                         <div class="contact-details">
                             <h4>আমাদের ঠিকানা</h4>
-                            <p>হাউজ #১/এ, রোড #৬, সেক্টর #৩<br>উত্তরা মডেল টাউন, উত্তরা, ঢাকা-১২৩০</p>
+                            <p id="contact-address">হাউজ #১/এ, রোড #৬, সেক্টর #৩<br>উত্তরা মডেল টাউন, উত্তরা, ঢাকা-১২৩০</p>
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@
                         </div>
                         <div class="contact-details">
                             <h4>ফোন নম্বর</h4>
-                            <p>+৮৮০ ১২৩৪ ৫৬৭৮৯০<br>+৮৮০ ৯৮৭৬ ৫৪৩২১০</p>
+                            <p id="contact-phone">+৮৮০ ১২৩৪ ৫৬৭৮৯০<br>+৮৮০ ৯৮৭৬ ৫৪৩২১০</p>
                         </div>
                     </div>
 
@@ -49,7 +49,7 @@
                         </div>
                         <div class="contact-details">
                             <h4>ইমেইল</h4>
-                            <p>mrpfoundation19@gmail.com</p>
+                            <p id="contact-email">mrpfoundation19@gmail.com</p>
                         </div>
                     </div>
 
