@@ -225,12 +225,37 @@
 
         @media (max-width: 768px) {
             .page-header h1 { font-size: 2.2rem; }
+            .event-meta-row { gap: 0.8rem; }
             .registration-container { padding: 2.5rem 1.5rem; }
             .slider-item { flex: 0 0 85%; }
             .slider-control.prev { left: -10px; }
             .slider-control.next { right: -10px; }
-            .event-meta-row { gap: 0.8rem; }
         }
+
+        /* Skeleton Loading Styles */
+        .skeleton {
+            background-color: #e2e8f0 !important;
+            background-image: linear-gradient(90deg, #e2e8f0 0px, #f8fafc 40px, #e2e8f0 80px) !important;
+            background-size: 200% 100% !important;
+            animation: skeleton-shimmer 1.5s infinite linear !important;
+            border-radius: 4px;
+            display: inline-block;
+            color: transparent !important;
+            border: none !important;
+        }
+
+        @keyframes skeleton-shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .skeleton-text { height: 1.2rem; margin-bottom: 0.5rem; width: 100%; min-width: 100px; }
+        .skeleton-title { height: 3.5rem; width: 80%; margin: 0 auto; display: block; }
+        .skeleton-pill { height: 25px; width: 120px; border-radius: 50px; display: block; margin: 0 auto 1rem; }
+        .skeleton-meta { height: 35px; width: 160px; border-radius: 50px; }
+        .skeleton-image { width: 100%; height: 250px; border-radius: 16px; }
+        .skeleton-desc { height: 200px; width: 100%; display: block; }
+        .skeleton-list-item { height: 25px; width: 90%; margin-bottom: 15px; display: block; }
     </style>
 @endsection
 
@@ -238,12 +263,12 @@
     <!-- Page Header (Universal Style) -->
     <section class="page-header">
         <div class="container" style="position: relative; z-index: 1;">
-            <span class="category-pill">Social Welfare</span>
-            <h1 class="reveal-text" style="font-size: 3rem; margin-bottom: 0;">শীতার্তদের মাঝে বস্ত্র বিতরণ কর্মসূচি ২০২৬</h1>
+            <span class="category-pill skeleton skeleton-pill" id="event-type"></span>
+            <h1 class="reveal-text skeleton skeleton-title" id="event-title" style="font-size: 3rem; margin-bottom: 0;"></h1>
             <div class="event-meta-row reveal-text delay-100">
-                <div class="meta-tag"><i class="far fa-calendar-alt"></i> ১৫ জানুয়ারি, ২০২৬</div>
-                <div class="meta-tag"><i class="far fa-clock"></i> ১০:০০ AM - ০৫:০০ PM</div>
-                <div class="meta-tag"><i class="fas fa-map-marker-alt"></i> উত্তরা, ঢাকা</div>
+                <div class="meta-tag skeleton skeleton-meta"><span id="event-date-top"></span></div>
+                <div class="meta-tag skeleton skeleton-meta"><span id="event-time-top"></span></div>
+                <div class="meta-tag skeleton skeleton-meta"><span id="event-address-top"></span></div>
             </div>
         </div>
     </section>
@@ -254,67 +279,29 @@
             <!-- Left Side- Main Content -->
             <div class="main-text">
                 <h3>ইভেন্টের বিস্তারিত বর্ণনা</h3>
-                <p>
-                    তীব্র শীতে যখন সাধারণ জনজীবন বিপর্যস্ত হয়ে পড়ে, তখন সমাজের সুবিধাবঞ্চিত ও অসহায় মানুষের জন্য উষ্ণতার পরশ নিয়ে হাজির হয় এমআরপি ফাউন্ডেশন। প্রতি বছরের ন্যায় এবারও আমরা আয়োজন করতে যাচ্ছি "শীতার্তদের মাঝে বস্ত্র বিতরণ কর্মসূচি ২০২৬"। 
-                </p>
-                <p style="margin-top: 1.5rem;">
-                    এই কর্মসূচির মাধ্যমে আমরা উত্তরা এবং এর আশেপাশের এলাকার প্রায় ১০০০+ দুস্থ পরিবার, পথশিশু এবং বৃদ্ধদের মাঝে উন্নতমানের কম্বল এবং শীতকালীন পোশাক বিতরণ করার লক্ষ্যমাত্রা নির্ধারণ করেছি। আমাদের এই ক্ষুদ্র প্রচেষ্টা তখনই সফল হবে যখন আপনিও আমাদের সাথে অংশীদার হবেন।
-                </p>
+                <div id="event-description">
+                    <div class="skeleton skeleton-desc"></div>
+                </div>
 
                 <h4 style="margin: 2.5rem 0 1.5rem; color: var(--primary-dark); font-size: 1.5rem;">কেন অংশগ্রহণ করবেন?</h4>
-                <ul class="req-list">
-                    <li>অসহায় মানুষের মুখে হাসি ফোটানো</li>
-                    <li>মানবিক দায়িত্ববোধ থেকে সমাজের পাশে দাঁড়ানো</li>
-                    <li>স্বেচ্ছাসেবী হিসেবে বাস্তব অভিজ্ঞতায় দক্ষ হওয়া</li>
-                    <li>নতুন মানুষের সাথে নেটওয়ার্কিং ও টিমওয়ার্ক বৃদ্ধি করা</li>
+                <ul class="req-list" id="event-reasons">
+                    <li class="skeleton skeleton-list-item"></li>
+                    <li class="skeleton skeleton-list-item"></li>
+                    <li class="skeleton skeleton-list-item"></li>
                 </ul>
 
                 <h4 style="margin: 2.5rem 0 1.5rem; color: var(--primary-dark); font-size: 1.5rem;">কার্যক্রম সূচি:</h4>
                 <div style="background: #f8fafc; padding: 2rem;">
-                    <ul style="list-style: none;">
-                        <li style="margin-bottom: 1rem; display: flex; gap: 15px;">
-                            <strong style="color: var(--secondary-color); min-width: 100px;">১০:০০ AM</strong>
-                            <span>উদ্বোধনী বক্তব্য ও ভলান্টিয়ার ব্রিফিং</span>
-                        </li>
-                        <li style="margin-bottom: 1rem; display: flex; gap: 15px;">
-                            <strong style="color: var(--secondary-color); min-width: 100px;">১০:৩০ AM</strong>
-                            <span>প্রথম ধাপের শীতবস্ত্র বিতরণ শুরু</span>
-                        </li>
-                        <li style="margin-bottom: 1rem; display: flex; gap: 15px;">
-                            <strong style="color: var(--secondary-color); min-width: 100px;">০১:০০ PM</strong>
-                            <span>মধ্যাহ্ন বিরতি ও প্রার্থনা</span>
-                        </li>
-                        <li style="margin-bottom: 1rem; display: flex; gap: 15px;">
-                            <strong style="color: var(--secondary-color); min-width: 100px;">০২:৩০ PM</strong>
-                            <span>দ্বিতীয় ধাপের বিতরণ ও ফটো সেশন</span>
-                        </li>
-                        <li style="display: flex; gap: 15px;">
-                            <strong style="color: var(--secondary-color); min-width: 100px;">০৫:০০ PM</strong>
-                            <span>সমাপ্তি ও সার্টিফিকেট প্রদান (ভলান্টিয়ারদের জন্য)</span>
-                        </li>
+                    <ul style="list-style: none;" id="event-schedule">
+                        <li class="skeleton skeleton-list-item" style="height: 40px;"></li>
+                        <li class="skeleton skeleton-list-item" style="height: 40px;"></li>
                     </ul>
                 </div>
 
                 <div class="slider-wrapper">
                     <div class="slider-container" id="eventSlider">
-                        <div class="slider-item">
-                            <img src="https://images.pexels.com/photos/6646914/pexels-photo-6646914.jpeg" alt="শীতবস্ত্র বিতরণ প্রস্তুতি">
-                        </div>
-                        <div class="slider-item">
-                            <img src="https://images.pexels.com/photos/6348123/pexels-photo-6348123.jpeg" alt="তৃণমূল পর্যায়ে সহায়তা">
-                        </div>
-                        <div class="slider-item">
-                            <img src="https://images.pexels.com/photos/6994992/pexels-photo-6994992.jpeg" alt="ডোনেশন কালেকশন">
-                        </div>
-                        <div class="slider-item">
-                            <img src="https://images.pexels.com/photos/6647037/pexels-photo-6647037.jpeg" alt="সুবিধাবঞ্চিতদের মাঝে বস্ত্র বিতরণ">
-                        </div>
-                        <div class="slider-item">
-                            <img src="https://images.pexels.com/photos/6994982/pexels-photo-6994982.jpeg" alt="শীতের কম্বল বিতরণ">
-                        </div>
-                        <div class="slider-item">
-                            <img src="https://images.pexels.com/photos/1010079/pexels-photo-1010079.jpeg" alt="অসহায় মানুষের হাসি">
-                        </div>
+                        <div class="skeleton skeleton-image" style="flex: 0 0 calc(50% - 0.75rem);"></div>
+                        <div class="skeleton skeleton-image" style="flex: 0 0 calc(50% - 0.75rem);"></div>
                     </div>
                     <button class="slider-control prev" onclick="moveSlider(-1)"><i class="fas fa-chevron-left"></i></button>
                     <button class="slider-control next" onclick="moveSlider(1)"><i class="fas fa-chevron-right"></i></button>
@@ -330,21 +317,21 @@
                             <i class="fas fa-calendar-check"></i>
                             <div>
                                 <h5>তারিখ</h5>
-                                <p>১৫ জানুয়ারি, ২০২৬</p>
+                                <p id="event-date-sidebar" class="skeleton skeleton-text" style="width: 120px;"></p>
                             </div>
                         </div>
                         <div class="info-list-item">
                             <i class="fas fa-clock"></i>
                             <div>
                                 <h5>সময়</h5>
-                                <p>সকাল ১০ টা থেকে বিকাল ৫ টা</p>
+                                <p id="event-time-sidebar" class="skeleton skeleton-text" style="width: 120px;"></p>
                             </div>
                         </div>
                         <div class="info-list-item">
                             <i class="fas fa-map-marked-alt"></i>
                             <div>
                                 <h5>স্থান</h5>
-                                <p>সেক্টর ৩ খেলার মাঠ, উত্তরা, ঢাকা</p>
+                                <p id="event-address-sidebar" class="skeleton skeleton-text" style="width: 150px;"></p>
                             </div>
                         </div>
                         <div class="info-list-item">

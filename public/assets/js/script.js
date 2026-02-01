@@ -1007,6 +1007,167 @@ document.addEventListener('DOMContentLoaded', () => {
         .reveal-text
     `);
     
+    // Fetch and Populate Event Details & List
+    async function fetchEvents() {
+        const eventTitle = document.getElementById('event-title'); // Details page indicator
+        const eventsContainer = document.getElementById('events-container'); // List page indicator
+        if (!eventTitle && !eventsContainer) return;
+
+        const apiUrl = 'http://192.168.68.112:8001/api/event';
+        const fallbackUrl = 'http://localhost:8001/api/event';
+
+        try {
+            let response;
+            try {
+                response = await fetch(apiUrl);
+            } catch (err) {
+                response = await fetch(fallbackUrl);
+            }
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const result = await response.json();
+            console.log('Event API Response:', result);
+
+            if (result.success && result.data && result.data.length > 0) {
+                // --- Handle Details Page ---
+                if (eventTitle) {
+                    const event = result.data[0];
+                    
+                    // Remove skeleton classes
+                    const skeletonElements = document.querySelectorAll('.skeleton');
+                    
+                    eventTitle.textContent = event.title;
+                    eventTitle.classList.remove('skeleton', 'skeleton-title');
+
+                    const eventType = document.getElementById('event-type');
+                    if (eventType) {
+                        eventType.textContent = event.type_name;
+                        eventType.classList.remove('skeleton', 'skeleton-pill');
+                    }
+
+                    // Update Top Meta with icons
+                    const eventDateTop = document.getElementById('event-date-top');
+                    if (eventDateTop) {
+                        const parent = eventDateTop.parentElement;
+                        parent.innerHTML = `<i class="far fa-calendar-alt"></i> <span id="event-date-top">${event.date}</span>`;
+                        parent.classList.remove('skeleton', 'skeleton-meta');
+                    }
+                    const eventTimeTop = document.getElementById('event-time-top');
+                    if (eventTimeTop) {
+                        const parent = eventTimeTop.parentElement;
+                        parent.innerHTML = `<i class="far fa-clock"></i> <span id="event-time-top">${event.time}</span>`;
+                        parent.classList.remove('skeleton', 'skeleton-meta');
+                    }
+                    const eventAddressTop = document.getElementById('event-address-top');
+                    if (eventAddressTop) {
+                        const parent = eventAddressTop.parentElement;
+                        parent.innerHTML = `<i class="fas fa-map-marker-alt"></i> <span id="event-address-top">${event.address}</span>`;
+                        parent.classList.remove('skeleton', 'skeleton-meta');
+                    }
+
+                    const eventDateSidebar = document.getElementById('event-date-sidebar');
+                    if(eventDateSidebar) {
+                        eventDateSidebar.textContent = event.date;
+                        eventDateSidebar.classList.remove('skeleton', 'skeleton-text');
+                    }
+                    const eventTimeSidebar = document.getElementById('event-time-sidebar');
+                    if(eventTimeSidebar) {
+                        eventTimeSidebar.textContent = event.time;
+                        eventTimeSidebar.classList.remove('skeleton', 'skeleton-text');
+                    }
+                    const eventAddressSidebar = document.getElementById('event-address-sidebar');
+                    if(eventAddressSidebar) {
+                        eventAddressSidebar.textContent = event.address;
+                        eventAddressSidebar.classList.remove('skeleton', 'skeleton-text');
+                    }
+
+                    const eventDesc = document.getElementById('event-description');
+                    if (eventDesc && event.description) {
+                        eventDesc.innerHTML = `<p>${event.description}</p>`;
+                    }
+
+                    const eventReasons = document.getElementById('event-reasons');
+                    if (eventReasons && event.reasons) {
+                        const reasons = Array.isArray(event.reasons) ? event.reasons : JSON.parse(event.reasons);
+                        eventReasons.innerHTML = reasons.map(r => `<li>${r}</li>`).join('');
+                    }
+
+                    const eventSchedule = document.getElementById('event-schedule');
+                    if (eventSchedule && event.schedule) {
+                        const schedule = Array.isArray(event.schedule) ? event.schedule : JSON.parse(event.schedule);
+                        eventSchedule.innerHTML = schedule.map(item => `
+                            <li style="margin-bottom: 1rem; display: flex; gap: 15px;">
+                                <strong style="color: var(--secondary-color); min-width: 100px;">${item.time || item.hour || ''}</strong>
+                                <span>${item.desc || item.activity || item.title || item.subject || ''}</span>
+                            </li>
+                        `).join('');
+                    }
+
+                    const eventSlider = document.getElementById('eventSlider');
+                    if (eventSlider && event.image_gallery) {
+                        const gallery = Array.isArray(event.image_gallery) ? event.image_gallery : JSON.parse(event.image_gallery);
+                        eventSlider.innerHTML = gallery.map(imgUrl => `<div class="slider-item"><img src="${imgUrl}" alt="${event.title}"></div>`).join('');
+                        eventSlider.querySelectorAll('img').forEach((img, idx) => {
+                            img.addEventListener('click', () => { currentImgIndex = idx; if (typeof openModal === 'function') openModal(img.src, img.alt); });
+                        });
+                    }
+
+                    const pageHeader = document.querySelector('.page-header');
+                    if (pageHeader) {
+                        pageHeader.style.backgroundImage = '';
+                    }
+                }
+
+                // --- Handle Event List Page ---
+                if (eventsContainer) {
+                    eventsContainer.innerHTML = '';
+                    result.data.forEach((event, index) => {
+                        const eventDate = new Date(event.date);
+                        const day = eventDate.getDate();
+                        const month = eventDate.toLocaleString('en-US', { month: 'short' });
+                        const delay = (index + 1) * 100;
+
+                        const card = `
+                            <div class="event-card reveal-text" style="transition-delay: ${delay}ms">
+                                <div class="event-image">
+                                    <img src="${event.image}" alt="${event.title}">
+                                    <div class="event-date-badge">
+                                        <span class="day">${day}</span>
+                                        <span class="month">${month}</span>
+                                    </div>
+                                </div>
+                                <div class="event-details">
+                                    <div class="event-category">${event.type_name}</div>
+                                    <h3 class="event-title">${event.title}</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-map-marker-alt"></i> ${event.address}</span>
+                                        <span><i class="far fa-clock"></i> ${event.time}</span>
+                                    </div>
+                                    <p class="event-desc">${event.description.substring(0, 100)}...</p>
+                                    <div class="event-footer">
+                                        <a href="/event-details" class="btn btn-outline" style="color: var(--secondary-color); border-color: var(--secondary-color); width: 100%; text-align: center;">বিস্তারিত দেখুন</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        eventsContainer.insertAdjacentHTML('beforeend', card);
+                        
+                        // Re-observe for animation
+                        const newCard = eventsContainer.lastElementChild;
+                        if (typeof observer !== 'undefined') observer.observe(newCard);
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('❌ Detailed Event Fetch Error:', error);
+            if (eventsContainer) {
+                eventsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1;"><p style="color: red;">ডেটা লোড করতে সমস্যা হয়েছে।</p></div>';
+            }
+        }
+    }
+    fetchEvents();
+
     revealElements.forEach(el => {
         el.classList.add('reveal-text');
         
