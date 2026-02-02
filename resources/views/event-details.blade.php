@@ -396,20 +396,20 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">কি হিসেবে যোগ দিতে চান?</label>
-                            <select class="form-control" name="role">
+                            <select class="form-control" name="post">
                                 <option value="volunteer">স্বেচ্ছাসেবী</option>
                                 <option value="guest">অতিথি</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label class="form-label">বর্তমান অবস্থান</label>
-                            <input type="text" class="form-control" name="location" placeholder="শহর/এলাকার নাম" required>
+                            <input type="text" class="form-control" name="location" placeholder="শহর/এলাকার নাম">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">অতিরিক্ত তথ্য বা বার্তা (যদি থাকে)</label>
-                        <textarea class="form-control" name="message" rows="4" placeholder="আপনার কোনো বিশেষ অনুরোধ বা তথ্য থাকলে এখানে লিখুন..."></textarea>
+                        <textarea class="form-control" name="additional_info" rows="4" placeholder="আপনার কোনো বিশেষ অনুরোধ বা তথ্য থাকলে এখানে লিখুন..."></textarea>
                     </div>
 
                     <div class="text-center mt-2">
@@ -429,6 +429,27 @@
         </div>
         <button class="modal-nav prev" onclick="changeModalSlide(-1)">&#10094;</button>
         <button class="modal-nav next" onclick="changeModalSlide(1)">&#10095;</button>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="success-modal">
+            <div class="success-icon"><i class="fas fa-check"></i></div>
+            <h3>অভিনন্দন!</h3>
+            <p>আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে।<br>আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।</p>
+            <button class="btn-success" onclick="closeModal()">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+        <div class="error-modal">
+            <div class="error-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3>রেজিস্ট্রেশন করা যায়নি</h3>
+            <p style="margin-bottom: 10px;">নিচের ত্রুটিগুলো সমাধান করে পুনরায় চেষ্টা করুন:</p>
+            <div class="error-details-box" id="errorDetails"></div>
+            <button class="btn-error-close" onclick="document.getElementById('errorModal').classList.remove('active')">বন্ধ করুন</button>
+        </div>
     </div>
 @endsection
 
@@ -497,10 +518,82 @@
         });
 
         // Registration form handler
-        document.getElementById('eventRegistrationForm').addEventListener('submit', function(e) {
+        document.getElementById('eventRegistrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে! আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।');
-            this.reset();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'প্রসেসিং হচ্ছে...';
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            // If location is provided but not in API, maybe append it to additional_info
+            if (data.location) {
+                data.additional_info = `অবস্থান: ${data.location}. ${data.additional_info || ''}`;
+            }
+
+            const apiUrl = 'http://192.168.68.112:8001/api/event-registration';
+            const fallbackUrl = 'http://localhost:8001/api/event-registration';
+
+            try {
+                let response;
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                };
+
+                try {
+                    response = await fetch(apiUrl, options);
+                } catch (err) {
+                    response = await fetch(fallbackUrl, options);
+                }
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('successModal').classList.add('active');
+                    this.reset();
+                } else {
+                    let errorMsg = result.message || 'সাবমিট করতে সমস্যা হয়েছে।';
+                    if (result.errors) {
+                        errorMsg = Object.entries(result.errors).map(([field, msgs]) => `[${field}] : ${msgs.join(', ')}`).join('\n');
+                    }
+                    throw new Error(errorMsg);
+                }
+            } catch (error) {
+                console.error('Registration Error:', error);
+                const errorModal = document.getElementById('errorModal');
+                const errorDetailsBox = document.getElementById('errorDetails');
+                if (errorModal && errorDetailsBox) {
+                    errorDetailsBox.innerText = error.message;
+                    errorModal.classList.add('active');
+                } else {
+                    alert('ভুল হয়েছেঃ ' + error.message);
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+        // Modal Helper
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // Close on outside click
+        const successModal = document.getElementById('successModal');
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                closeModal();
+            }
         });
     </script>
 @endsection
