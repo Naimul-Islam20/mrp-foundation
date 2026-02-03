@@ -6,6 +6,7 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImage = document.getElementById('lightbox-image');
 const captionText = document.getElementById('caption');
 const galleryContainer = document.getElementById('gallery-container');
+const CACHE_KEY = 'mrp_gallery_cache_v1';
 
 // Open the Lightbox
 function openLightbox() {
@@ -49,44 +50,65 @@ function showSlide(n) {
   if (captionText) captionText.innerText = title;
 }
 
-// Scroll Animation Observer for Dynamic Items
-const galleryObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-        }
+// Function to render gallery items
+function renderGallery(data) {
+    if (!galleryContainer) return;
+    galleryContainer.innerHTML = '';
+    
+    data.forEach((item, index) => {
+        const delay = (index % 6 + 1) * 100;
+        
+        const galleryItem = document.createElement('div');
+        galleryItem.className = `gallery-item active`; // Direct active for cache smoothness
+        galleryItem.style.transitionDelay = `${delay}ms`;
+        galleryItem.innerHTML = `
+            <img src="${item.image}" alt="${item.title}">
+            <div class="gallery-overlay">
+                <div class="gallery-title">${item.title}</div>
+                <div class="gallery-date"><i class="far fa-calendar-alt"></i> ${item.date}</div>
+            </div>
+        `;
+        
+        galleryItem.addEventListener('click', () => {
+            openLightbox();
+            currentSlide(index + 1);
+        });
+        
+        galleryContainer.appendChild(galleryItem);
     });
-}, { threshold: 0.1 });
+}
 
-// Fetch Gallery Data from API
+// Stale-While-Revalidate Fetch
 async function fetchGallery() {
     if (!galleryContainer) return;
-    
-    // API URL provided by the user
     const apiUrl = 'http://192.168.68.112:8001/api/photo-galleries';
     
+    // 1. Load from Cache
+    const cachedDataStr = localStorage.getItem(CACHE_KEY);
+    if (cachedDataStr) {
+        try {
+            galleryData = JSON.parse(cachedDataStr);
+            console.log('Serving Gallery from cache...');
+            renderGallery(galleryData);
+        } catch(e) { console.error('Gallery Cache Error:', e); }
+    }
+
+    // 2. Fetch from API
     try {
         const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error('Network response was not ok');
+        if (!response.ok) throw new Error('Gallery Refresh Failed');
         
         const result = await response.json();
-        
-        // Checking for both 'status' or 'success' as success indicators
         const isSuccess = result.status || result.success;
-        const rawData = result.data || result; // Use data property or fallback to result itself
+        const rawData = result.data || result;
 
-        if (isSuccess && Array.isArray(rawData) && rawData.length > 0) {
-            galleryData = []; // Clear and prepare for flattened data
-            galleryContainer.innerHTML = ''; // Clear skeletons
-            
-            // Flatten the data: Your API returns entries with an 'images' array
+        if (isSuccess && Array.isArray(rawData)) {
+            const flattenedData = [];
             rawData.forEach(entry => {
                 const imagesList = Array.isArray(entry.images) ? entry.images : [(entry.image || entry.image_url || entry.photo || entry.url)];
-                
                 imagesList.forEach(imgUrl => {
                     if (imgUrl) {
-                        galleryData.push({
+                        flattenedData.push({
                             image: imgUrl,
                             title: entry.title || 'No Title',
                             date: entry.date || entry.created_at || ''
@@ -95,37 +117,23 @@ async function fetchGallery() {
                 });
             });
 
-            // Render the flattened items
-            galleryData.forEach((item, index) => {
-                const delay = (index % 6 + 1) * 100;
-                
-                const galleryItem = document.createElement('div');
-                galleryItem.className = `gallery-item reveal-text delay-${delay}`;
-                galleryItem.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}">
-                    <div class="gallery-overlay">
-                        <div class="gallery-title">${item.title}</div>
-                        <div class="gallery-date"><i class="far fa-calendar-alt"></i> ${item.date}</div>
-                    </div>
-                `;
-                
-                // Click to open lightbox
-                galleryItem.addEventListener('click', () => {
-                    openLightbox();
-                    currentSlide(index + 1);
-                });
-                
-                galleryContainer.appendChild(galleryItem);
-                
-                // Observe for animation
-                galleryObserver.observe(galleryItem);
-            });
-        } else if (rawData && rawData.length === 0) {
-            galleryContainer.innerHTML = '<p class="text-center" style="grid-column: 1/-1; padding: 2rem;">বর্তমানে কোনো ছবি পাওয়া যায়নি।</p>';
+            const newDataStr = JSON.stringify(flattenedData);
+
+            // 3. Compare and Update
+            if (newDataStr !== cachedDataStr) {
+                console.log('Gallery updated! Refreshing UI...');
+                galleryData = flattenedData;
+                renderGallery(galleryData);
+                localStorage.setItem(CACHE_KEY, newDataStr);
+            } else {
+                console.log('Gallery is already up to date.');
+            }
         }
     } catch (error) {
         console.error('Error fetching gallery:', error);
-        galleryContainer.innerHTML = '<p class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #ff3366;">সার্ভার থেকে গ্যালারি লোড করা সম্ভব হয়নি। অনুগ্রহ করে পরে চেষ্টা করুন।</p>';
+        if (!cachedDataStr) {
+            galleryContainer.innerHTML = '<p class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #ff3366;">সার্ভার থেকে গ্যালারি লোড করা সম্ভব হয়নি।</p>';
+        }
     }
 }
 
@@ -155,4 +163,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-

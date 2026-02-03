@@ -6,73 +6,70 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Fetch and Update 'Our Details' from API
     async function fetchOurDetails() {
-        try {
+        const CACHE_KEY = 'mrp_details_cache';
+        
+        // Function to update the UI
+        const updateUI = (apiData) => {
+            const address = apiData.our_address || '';
+            const phone = apiData.our_phone ? apiData.our_phone.split(',').join('<br>') : '';
+            const email = apiData.our_email || '';
 
-            const response = await fetch('https://admin.mrpfoundation.net/api/our-details', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
+            const contactAddr = document.getElementById('contact-address');
+            const contactPhone = document.getElementById('contact-phone');
+            const contactEmail = document.getElementById('contact-email');
+            if (contactAddr) contactAddr.innerHTML = address;
+            if (contactPhone) contactPhone.innerHTML = phone;
+            if (contactEmail) contactEmail.innerText = email;
 
-            if (!response.ok) throw new Error('Network response was not ok');
-            
-            const result = await response.json();
+            const homeAddr = document.getElementById('home-address');
+            const homePhone = document.getElementById('home-phone');
+            const homeEmail = document.getElementById('home-email');
+            if (homeAddr) homeAddr.innerHTML = address;
+            if (homePhone) homePhone.innerHTML = phone;
+            if (homeEmail) homeEmail.innerText = email;
 
-
-            if (result.status && result.data && result.data.length > 0) {
-                const apiData = result.data[0];
-                
-                // Map fields from API
-                const address = apiData.our_address || '';
-                // Split phone by comma or replace with <br>
-                const phone = apiData.our_phone ? apiData.our_phone.split(',').join('<br>') : '';
-                const email = apiData.our_email || '';
-
-                // Update Contact Page Elements
-                const contactAddr = document.getElementById('contact-address');
-                const contactPhone = document.getElementById('contact-phone');
-                const contactEmail = document.getElementById('contact-email');
-
-                if (contactAddr) contactAddr.innerHTML = address;
-                if (contactPhone) contactPhone.innerHTML = phone;
-                if (contactEmail) contactEmail.innerText = email;
-
-                // Update Home Page Elements
-                const homeAddr = document.getElementById('home-address');
-                const homePhone = document.getElementById('home-phone');
-                const homeEmail = document.getElementById('home-email');
-
-                if (homeAddr) homeAddr.innerHTML = address;
-                if (homePhone) homePhone.innerHTML = phone;
-                if (homeEmail) homeEmail.innerText = email;
-
-                // Update Footer
-                const footerAddr = document.getElementById('footer-address');
-                if (footerAddr) {
-                    footerAddr.innerHTML = `<i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px"></i> ${address}`;
-                }
-
-                // Update Social Links if any
-                const updateSocialLink = (iconClass, link) => {
-                    if (!link) return;
-                    document.querySelectorAll(`.social-link i.${iconClass}`).forEach(icon => {
-                        const anchor = icon.closest('a');
-                        if (anchor) anchor.href = link;
-                    });
-                };
-
-                updateSocialLink('fa-facebook-f', apiData.fb_link);
-                updateSocialLink('fa-facebook', apiData.fb_link);
-                updateSocialLink('fa-twitter', apiData.twitter_link);
-                updateSocialLink('fa-instagram', apiData.insta_link);
-                updateSocialLink('fa-linkedin-in', apiData.linkedin_link);
-                updateSocialLink('fa-linkedin', apiData.linkedin_link);
+            const footerAddr = document.getElementById('footer-address');
+            if (footerAddr) {
+                footerAddr.innerHTML = `<i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px"></i> ${address}`;
             }
 
-        } catch (error) {
+            const updateSocialLink = (iconClass, link) => {
+                if (!link) return;
+                document.querySelectorAll(`.social-link i.${iconClass}`).forEach(icon => {
+                    const anchor = icon.closest('a');
+                    if (anchor) anchor.href = link;
+                });
+            };
+            updateSocialLink('fa-facebook-f', apiData.fb_link);
+            updateSocialLink('fa-facebook', apiData.fb_link);
+            updateSocialLink('fa-twitter', apiData.twitter_link);
+            updateSocialLink('fa-instagram', apiData.insta_link);
+            updateSocialLink('fa-linkedin-in', apiData.linkedin_link);
+            updateSocialLink('fa-linkedin', apiData.linkedin_link);
+        };
 
+        // 1. Try Cache
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            updateUI(JSON.parse(cached));
         }
+
+        // 2. Background Fetch
+        try {
+            const response = await fetch('https://admin.mrpfoundation.net/api/our-details', {
+                method: 'GET', headers: { 'Accept': 'application/json' }
+            });
+            if (response.ok) {
+                const result = await response.json();
+                if (result.status && result.data && result.data.length > 0) {
+                    const apiData = result.data[0];
+                    if (JSON.stringify(apiData) !== cached) {
+                        updateUI(apiData);
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(apiData));
+                    }
+                }
+            }
+        } catch (error) { console.error('Details Fetch Error:', error); }
     }
 
     // Call it immediately
@@ -83,79 +80,68 @@ document.addEventListener('DOMContentLoaded', () => {
         const jobsContainer = document.getElementById('jobs-container');
         const positionSelect = document.getElementById('position');
         if (!jobsContainer && !positionSelect) return;
+        const CACHE_KEY = 'mrp_vacancies_cache';
 
-        try {
-
-            const response = await fetch('https://admin.mrpfoundation.net/api/vacancies');
-            const result = await response.json();
-
-
-            if (result.status && result.data) {
-                // Populate Jobs Grid
-                if (jobsContainer) {
-                    if (result.data.length === 0) {
-                        jobsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 3rem;"><p>বর্তমানে কোনো খালি পদ নেই।</p></div>';
-                    } else {
-                        jobsContainer.innerHTML = ''; // Clear loader
-                        
-                        result.data.forEach((job, index) => {
-                            const delay = (index + 1) * 100;
-                            const deadline = new Date(job.last_date_of_apply);
-                            const formattedDate = deadline.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long' });
-
-                            const jobCard = `
-                                <div class="job-card reveal-text" style="transition-delay: ${delay}ms">
-                                    <div class="job-info">
-                                        <h3 class="job-title">${job.title}</h3>
-                                        <div class="job-meta">
-                                            <span class="job-meta-item">
-                                                <i class="fas fa-map-marker-alt"></i>
-                                                ${job.workplace}
-                                            </span>
-                                            <span class="job-meta-item">
-                                                <i class="fas fa-briefcase"></i>
-                                                ${job.worktime}
-                                            </span>
-                                            <span class="job-meta-item">
-                                                <i class="fas fa-layer-group"></i>
-                                                ${job.experience}
-                                            </span>
-                                        </div>
-                                        <p class="job-desc">${job.description}</p>
-                                        <div class="job-tags">
-                                            ${job.skills.map(skill => `<span class="job-tag">${skill}</span>`).join('')}
-                                        </div>
+        const renderVacancies = (data) => {
+            if (jobsContainer) {
+                if (data.length === 0) {
+                    jobsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 3rem;"><p>বর্তমানে কোনো খালি পদ নেই।</p></div>';
+                } else {
+                    jobsContainer.innerHTML = '';
+                    data.forEach((job, index) => {
+                        const delay = (index + 1) * 100;
+                        const deadline = new Date(job.last_date_of_apply);
+                        const formattedDate = deadline.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long' });
+                        const jobCard = `
+                            <div class="job-card active" style="transition-delay: ${delay}ms; opacity: 1; transform: translateY(0);">
+                                <div class="job-info">
+                                    <h3 class="job-title">${job.title}</h3>
+                                    <div class="job-meta">
+                                        <span class="job-meta-item"><i class="fas fa-map-marker-alt"></i> ${job.workplace}</span>
+                                        <span class="job-meta-item"><i class="fas fa-briefcase"></i> ${job.worktime}</span>
+                                        <span class="job-meta-item"><i class="fas fa-layer-group"></i> ${job.experience}</span>
                                     </div>
-                                    <div class="job-action">
-                                        <button class="apply-btn" onclick="scrollToForm()">আবেদন করুন</button>
-                                        <span class="job-deadline">শেষ তারিখ: ${formattedDate}</span>
-                                    </div>
+                                    <p class="job-desc">${job.description}</p>
+                                    <div class="job-tags">${job.skills.map(skill => `<span class="job-tag">${skill}</span>`).join('')}</div>
                                 </div>
-                            `;
-                            jobsContainer.insertAdjacentHTML('beforeend', jobCard);
-                            
-                            // Re-observe for animation
-                            const newCard = jobsContainer.lastElementChild;
-                            if (typeof observer !== 'undefined') observer.observe(newCard);
-                        });
-                    }
-                }
-
-                // Populate Position Dropdown
-                if (positionSelect) {
-                    positionSelect.innerHTML = '<option value="">পদ নির্বাচন করুন</option>';
-                    result.data.forEach(job => {
-                        const option = document.createElement('option');
-                        option.value = job.title; // Using title as value
-                        option.textContent = job.title;
-                        positionSelect.appendChild(option);
+                                <div class="job-action">
+                                    <button class="apply-btn" onclick="scrollToForm()">আবেদন করুন</button>
+                                    <span class="job-deadline">শেষ তারিখ: ${formattedDate}</span>
+                                </div>
+                            </div>
+                        `;
+                        jobsContainer.insertAdjacentHTML('beforeend', jobCard);
                     });
                 }
             }
-        } catch (error) {
+            if (positionSelect) {
+                positionSelect.innerHTML = '<option value="">পদ নির্বাচন করুন</option>';
+                data.forEach(job => {
+                    const option = document.createElement('option');
+                    option.value = job.title;
+                    option.textContent = job.title;
+                    positionSelect.appendChild(option);
+                });
+            }
+        };
 
-            if (jobsContainer) {
-                jobsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 3rem;"><p style="color: red;">সার্ভার থেকে তথ্য পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p></div>';
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            renderVacancies(JSON.parse(cached));
+        }
+
+        try {
+            const response = await fetch('https://admin.mrpfoundation.net/api/vacancies');
+            const result = await response.json();
+            if (result.status && result.data) {
+                if (JSON.stringify(result.data) !== cached) {
+                    renderVacancies(result.data);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(result.data));
+                }
+            }
+        } catch (error) {
+            if (!cached && jobsContainer) {
+                jobsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 3rem;"><p style="color: red;">সার্ভার থেকে তথ্য পাওয়া যায়নি।</p></div>';
             }
         }
     }
@@ -1009,161 +995,83 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Fetch and Populate Event Details & List
     async function fetchEvents() {
-        const eventTitle = document.getElementById('event-title'); // Details page indicator
-        const eventsContainer = document.getElementById('events-container'); // List page indicator
+        const eventTitle = document.getElementById('event-title');
+        const eventsContainer = document.getElementById('events-container');
         if (!eventTitle && !eventsContainer) return;
 
         const apiUrl = 'http://192.168.68.112:8001/api/event';
-        const fallbackUrl = 'http://localhost:8001/api/event';
+        const storageUrl = 'http://192.168.68.112:8001/storage/';
+        const CACHE_KEY = 'mrp_events_cache';
+
+        const updateUI = (data) => {
+            if (eventTitle && data.length > 0) {
+                const event = data[0];
+                eventTitle.textContent = event.title;
+                eventTitle.classList.remove('skeleton', 'skeleton-title');
+                const eventType = document.getElementById('event-type');
+                if (eventType) { eventType.textContent = event.type_name; eventType.classList.remove('skeleton', 'skeleton-pill'); }
+                const eventDateTop = document.getElementById('event-date-top');
+                if (eventDateTop) { eventDateTop.parentElement.innerHTML = `<i class="far fa-calendar-alt"></i> <span>${event.date}</span>`; }
+                const eventTimeTop = document.getElementById('event-time-top');
+                if (eventTimeTop) { eventTimeTop.parentElement.innerHTML = `<i class="far fa-clock"></i> <span>${event.time}</span>`; }
+                const eventAddressTop = document.getElementById('event-address-top');
+                if (eventAddressTop) { eventAddressTop.parentElement.innerHTML = `<i class="fas fa-map-marker-alt"></i> <span>${event.address}</span>`; }
+                const eventDesc = document.getElementById('event-description');
+                if (eventDesc) eventDesc.innerHTML = `<p>${event.description}</p>`;
+                
+                const eventReasons = document.getElementById('event-reasons');
+                if (eventReasons && event.reasons) {
+                    const reasons = Array.isArray(event.reasons) ? event.reasons : JSON.parse(event.reasons);
+                    eventReasons.innerHTML = reasons.map(r => `<li>${r}</li>`).join('');
+                }
+                const eventSchedule = document.getElementById('event-schedule');
+                if (eventSchedule && event.schedule) {
+                    const schedule = Array.isArray(event.schedule) ? event.schedule : JSON.parse(event.schedule);
+                    eventSchedule.innerHTML = schedule.map(item => `<li><strong style="color: var(--secondary-color); min-width: 100px;">${item.time || ''}</strong> <span>${item.desc || ''}</span></li>`).join('');
+                }
+            }
+            if (eventsContainer) {
+                eventsContainer.innerHTML = '';
+                data.forEach((event, index) => {
+                    const eventDate = new Date(event.date);
+                    const day = eventDate.getDate(), month = eventDate.toLocaleString('en-US', { month: 'short' });
+                    const delay = (index + 1) * 100;
+                    const card = `
+                        <div class="event-card active" style="transition-delay: ${delay}ms; opacity: 1; transform: translateY(0);">
+                            <div class="event-image">
+                                <img src="${event.image}" alt="${event.title}">
+                                <div class="event-date-badge"><span class="day">${day}</span><span class="month">${month}</span></div>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-category">${event.type_name}</div>
+                                <h3 class="event-title">${event.title}</h3>
+                                <div class="event-meta"><span><i class="fas fa-map-marker-alt"></i> ${event.address}</span><span><i class="far fa-clock"></i> ${event.time}</span></div>
+                                <p class="event-desc">${event.description.substring(0, 100)}...</p>
+                                <div class="event-footer"><a href="/event-details" class="btn btn-outline" style="color: var(--secondary-color); border-color: var(--secondary-color); width: 100%; text-align: center;">বিস্তারিত দেখুন</a></div>
+                            </div>
+                        </div>
+                    `;
+                    eventsContainer.insertAdjacentHTML('beforeend', card);
+                });
+            }
+        };
+
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) { updateUI(JSON.parse(cached)); }
 
         try {
-            let response;
-            try {
-                response = await fetch(apiUrl);
-            } catch (err) {
-                response = await fetch(fallbackUrl);
-            }
-
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const result = await response.json();
-            console.log('Event API Response:', result);
-
-            if (result.success && result.data && result.data.length > 0) {
-                // --- Handle Details Page ---
-                if (eventTitle) {
-                    const event = result.data[0];
-                    
-                    // Remove skeleton classes
-                    const skeletonElements = document.querySelectorAll('.skeleton');
-                    
-                    eventTitle.textContent = event.title;
-                    eventTitle.classList.remove('skeleton', 'skeleton-title');
-
-                    const eventType = document.getElementById('event-type');
-                    if (eventType) {
-                        eventType.textContent = event.type_name;
-                        eventType.classList.remove('skeleton', 'skeleton-pill');
-                    }
-
-                    // Update Top Meta with icons
-                    const eventDateTop = document.getElementById('event-date-top');
-                    if (eventDateTop) {
-                        const parent = eventDateTop.parentElement;
-                        parent.innerHTML = `<i class="far fa-calendar-alt"></i> <span id="event-date-top">${event.date}</span>`;
-                        parent.classList.remove('skeleton', 'skeleton-meta');
-                    }
-                    const eventTimeTop = document.getElementById('event-time-top');
-                    if (eventTimeTop) {
-                        const parent = eventTimeTop.parentElement;
-                        parent.innerHTML = `<i class="far fa-clock"></i> <span id="event-time-top">${event.time}</span>`;
-                        parent.classList.remove('skeleton', 'skeleton-meta');
-                    }
-                    const eventAddressTop = document.getElementById('event-address-top');
-                    if (eventAddressTop) {
-                        const parent = eventAddressTop.parentElement;
-                        parent.innerHTML = `<i class="fas fa-map-marker-alt"></i> <span id="event-address-top">${event.address}</span>`;
-                        parent.classList.remove('skeleton', 'skeleton-meta');
-                    }
-
-                    const eventDateSidebar = document.getElementById('event-date-sidebar');
-                    if(eventDateSidebar) {
-                        eventDateSidebar.textContent = event.date;
-                        eventDateSidebar.classList.remove('skeleton', 'skeleton-text');
-                    }
-                    const eventTimeSidebar = document.getElementById('event-time-sidebar');
-                    if(eventTimeSidebar) {
-                        eventTimeSidebar.textContent = event.time;
-                        eventTimeSidebar.classList.remove('skeleton', 'skeleton-text');
-                    }
-                    const eventAddressSidebar = document.getElementById('event-address-sidebar');
-                    if(eventAddressSidebar) {
-                        eventAddressSidebar.textContent = event.address;
-                        eventAddressSidebar.classList.remove('skeleton', 'skeleton-text');
-                    }
-
-                    const eventDesc = document.getElementById('event-description');
-                    if (eventDesc && event.description) {
-                        eventDesc.innerHTML = `<p>${event.description}</p>`;
-                    }
-
-                    const eventReasons = document.getElementById('event-reasons');
-                    if (eventReasons && event.reasons) {
-                        const reasons = Array.isArray(event.reasons) ? event.reasons : JSON.parse(event.reasons);
-                        eventReasons.innerHTML = reasons.map(r => `<li>${r}</li>`).join('');
-                    }
-
-                    const eventSchedule = document.getElementById('event-schedule');
-                    if (eventSchedule && event.schedule) {
-                        const schedule = Array.isArray(event.schedule) ? event.schedule : JSON.parse(event.schedule);
-                        eventSchedule.innerHTML = schedule.map(item => `
-                            <li style="margin-bottom: 1rem; display: flex; gap: 15px;">
-                                <strong style="color: var(--secondary-color); min-width: 100px;">${item.time || item.hour || ''}</strong>
-                                <span>${item.desc || item.activity || item.title || item.subject || ''}</span>
-                            </li>
-                        `).join('');
-                    }
-
-                    const eventSlider = document.getElementById('eventSlider');
-                    if (eventSlider && event.image_gallery) {
-                        const gallery = Array.isArray(event.image_gallery) ? event.image_gallery : JSON.parse(event.image_gallery);
-                        eventSlider.innerHTML = gallery.map(imgUrl => `<div class="slider-item"><img src="${imgUrl}" alt="${event.title}"></div>`).join('');
-                        eventSlider.querySelectorAll('img').forEach((img, idx) => {
-                            img.addEventListener('click', () => { currentImgIndex = idx; if (typeof openModal === 'function') openModal(img.src, img.alt); });
-                        });
-                    }
-
-                    const pageHeader = document.querySelector('.page-header');
-                    if (pageHeader) {
-                        pageHeader.style.backgroundImage = '';
-                    }
-                }
-
-                // --- Handle Event List Page ---
-                if (eventsContainer) {
-                    eventsContainer.innerHTML = '';
-                    result.data.forEach((event, index) => {
-                        const eventDate = new Date(event.date);
-                        const day = eventDate.getDate();
-                        const month = eventDate.toLocaleString('en-US', { month: 'short' });
-                        const delay = (index + 1) * 100;
-
-                        const card = `
-                            <div class="event-card reveal-text" style="transition-delay: ${delay}ms">
-                                <div class="event-image">
-                                    <img src="${event.image}" alt="${event.title}">
-                                    <div class="event-date-badge">
-                                        <span class="day">${day}</span>
-                                        <span class="month">${month}</span>
-                                    </div>
-                                </div>
-                                <div class="event-details">
-                                    <div class="event-category">${event.type_name}</div>
-                                    <h3 class="event-title">${event.title}</h3>
-                                    <div class="event-meta">
-                                        <span><i class="fas fa-map-marker-alt"></i> ${event.address}</span>
-                                        <span><i class="far fa-clock"></i> ${event.time}</span>
-                                    </div>
-                                    <p class="event-desc">${event.description.substring(0, 100)}...</p>
-                                    <div class="event-footer">
-                                        <a href="/event-details" class="btn btn-outline" style="color: var(--secondary-color); border-color: var(--secondary-color); width: 100%; text-align: center;">বিস্তারিত দেখুন</a>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        eventsContainer.insertAdjacentHTML('beforeend', card);
-                        
-                        // Re-observe for animation
-                        const newCard = eventsContainer.lastElementChild;
-                        if (typeof observer !== 'undefined') observer.observe(newCard);
-                    });
+            const response = await fetch(apiUrl);
+            if (response.ok) {
+                const result = await response.json();
+                const newData = result.data || result;
+                if (Array.isArray(newData) && JSON.stringify(newData) !== cached) {
+                    updateUI(newData);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(newData));
                 }
             }
         } catch (error) {
-            console.error('❌ Detailed Event Fetch Error:', error);
-            if (eventsContainer) {
-                eventsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1;"><p style="color: red;">ডেটা লোড করতে সমস্যা হয়েছে।</p></div>';
-            }
+            console.error('Event Fetch Error:', error);
+            if (!cached && eventsContainer) eventsContainer.innerHTML = '<p style="color: red; text-align: center;">তথ্য পাওয়া যায়নি।</p>';
         }
     }
     fetchEvents();

@@ -19,6 +19,11 @@
     <section class="section gallery-section">
         <div class="container">
             <div class="gallery-grid" id="gallery-container">
+                <script>
+                    if (localStorage.getItem('mrp_gallery_cache_v1')) {
+                        document.write('<style>#gallery-container .skeleton-item { display: none !important; }</style>');
+                    }
+                </script>
                 <!-- Skeleton Loaders -->
                 <div class="gallery-item skeleton-item" style="height: 250px; background: #eee;"></div>
                 <div class="gallery-item skeleton-item" style="height: 250px; background: #eee;"></div>

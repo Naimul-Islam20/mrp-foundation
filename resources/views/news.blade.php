@@ -20,76 +20,121 @@
         <div class="container">
             <h2 class="section-title reveal-text">সাম্প্রতিক খবর</h2>
             
-            <div class="event-grid">
-                <!-- News Card 1 -->
-                <div class="event-card reveal-text delay-100">
-                    <div class="event-image">
-                        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="News Image">
-                        <div class="event-date-badge">
-                            <span class="day">12</span>
-                            <span class="month">Jan</span>
-                        </div>
-                    </div>
-                    <div class="event-details">
-                        <div class="event-category">Announcement</div>
-                        <h3 class="event-title">নতুন এজেন্ট নিয়োগ প্রক্রিয়া শুরু</h3>
-                        <div class="event-meta">
-                            <span><i class="fas fa-user-edit"></i> Admin</span>
-                            <span><i class="far fa-eye"></i> 1.2k Views</span>
-                        </div>
-                        <p class="event-desc">দেশজুড়ে আমাদের নেটওয়ার্ক সম্প্রসারণের লক্ষ্যে নতুন এজেন্ট নিয়োগ দেয়া হচ্ছে। আগ্রহী প্রার্থীদের দ্রুত আবেদন করার আহ্বান জানানো হচ্ছে।</p>
-                        <div class="event-footer">
-                            <a href="#" class="btn btn-outline" style="color: var(--secondary-color); border-color: var(--secondary-color); width: 100%; text-align: center;">বিস্তারিত পড়ুন</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News Card 2 -->
-                <div class="event-card reveal-text delay-200">
-                    <div class="event-image">
-                        <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="News Image">
-                        <div class="event-date-badge">
-                            <span class="day">05</span>
-                            <span class="month">Jan</span>
-                        </div>
-                    </div>
-                    <div class="event-details">
-                        <div class="event-category">Award</div>
-                        <h3 class="event-title">এমআরপি ফাউন্ডেশন পেল সেরা সমাজসেবা পুরস্কার</h3>
-                        <div class="event-meta">
-                            <span><i class="fas fa-user-edit"></i> Reporter</span>
-                            <span><i class="far fa-eye"></i> 3.5k Views</span>
-                        </div>
-                        <p class="event-desc">২০২৫ সালের সেরা সমাজসেবা মূলক প্রতিষ্ঠান হিসেবে এমআরপি ফাউন্ডেশনকে পুরস্কৃত করা হয়েছে।</p>
-                        <div class="event-footer">
-                            <a href="#" class="btn btn-outline" style="color: var(--secondary-color); border-color: var(--secondary-color); width: 100%; text-align: center;">বিস্তারিত পড়ুন</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News Card 3 -->
-                <div class="event-card reveal-text delay-300">
-                    <div class="event-image">
-                        <img src="https://images.unsplash.com/photo-1524813686514-a570f9d44bb2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="News Image">
-                        <div class="event-date-badge">
-                            <span class="day">28</span>
-                            <span class="month">Dec</span>
-                        </div>
-                    </div>
-                    <div class="event-details">
-                        <div class="event-category">Project Update</div>
-                        <h3 class="event-title">উত্তরা প্রজেক্টের সফল সমাপ্তি</h3>
-                        <div class="event-meta">
-                            <span><i class="fas fa-user-edit"></i> Project Mgr</span>
-                            <span><i class="far fa-eye"></i> 900 Views</span>
-                        </div>
-                        <p class="event-desc">উত্তরায় আমাদের গৃহহীনদের পুনর্বাসন প্রকল্পের প্রথম ধাপ সফলভাবে সম্পন্ন হয়েছে।</p>
-                        <div class="event-footer">
-                            <a href="#" class="btn btn-outline" style="color: var(--secondary-color); border-color: var(--secondary-color); width: 100%; text-align: center;">বিস্তারিত পড়ুন</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="event-grid" id="news-container">
+                <script>
+                    if (localStorage.getItem('mrp_news_cache_v1')) {
+                        document.write('<style>#news-container .skeleton-item { display: none !important; }</style>');
+                    }
+                </script>
+                <!-- Skeletons will be cleared by JS if cache exists -->
+                <div class="event-card skeleton-item" style="height: 400px; background: #eee;"></div>
+                <div class="event-card skeleton-item" style="height: 400px; background: #eee;"></div>
+                <div class="event-card skeleton-item" style="height: 400px; background: #eee;"></div>
             </div>
         </div>
     </section>
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const newsContainer = document.getElementById('news-container');
+            const apiUrl = 'http://192.168.68.112:8001/api/news';
+            const storageUrl = 'http://192.168.68.112:8001/storage/';
+            const CACHE_KEY = 'mrp_news_cache_v1';
+
+            // Function to render news cards
+            function renderNews(data, isCached = false) {
+                if (!newsContainer) return;
+                newsContainer.innerHTML = '';
+                
+                data.forEach((news, index) => {
+                    const delay = isCached ? 0 : (index + 1) * 100;
+                    const imageUrl = news.image 
+                        ? (news.image.startsWith('http') ? news.image : storageUrl + news.image) 
+                        : '';
+                    
+                    let day = '', month = '';
+                    if (news.date) {
+                        const newsDate = new Date(news.date);
+                        day = newsDate.getDate();
+                        month = newsDate.toLocaleString('en-US', { month: 'short' });
+                    }
+
+                    // For cached items, we don't use 'reveal-text' to avoid movement
+                    const animationClass = isCached ? '' : 'reveal-text active';
+                    const delayStyle = isCached ? '' : `style="transition-delay: ${delay}ms; opacity: 1; transform: translateY(0);"`;
+
+                    const card = `
+                        <div class="event-card ${animationClass}" ${delayStyle} style="opacity: 1; transform: none;">
+                            <div class="event-image">
+                                <img src="${imageUrl}" alt="${news.title || ''}" loading="eager">
+                                <div class="event-date-badge">
+                                    <span class="day">${day}</span>
+                                    <span class="month">${month}</span>
+                                </div>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-category">${news.type_name || 'সংবাদ'}</div>
+                                <h3 class="event-title">${news.title || ''}</h3>
+                                <div class="event-meta">
+                                    <span><i class="fas fa-user-edit"></i> ${news.post_by || 'Admin'}</span>
+                                    <span><i class="far fa-calendar-alt"></i> ${news.date || ''}</span>
+                                </div>
+                                <p class="event-desc">${news.description ? (news.description.length > 120 ? news.description.substring(0, 120) + '...' : news.description) : ''}</p>
+                                <div class="event-footer">
+                                    <a href="#" class="btn btn-outline" style="color: var(--secondary-color); border-color: var(--secondary-color); width: 100%; text-align: center;">বিস্তারিত পড়ুন</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    newsContainer.insertAdjacentHTML('beforeend', card);
+                });
+            }
+
+            // Stale-While-Revalidate Logic
+            async function fetchNews() {
+                // 1. Load from Cache immediately
+                const cachedDataStr = localStorage.getItem(CACHE_KEY);
+                if (cachedDataStr) {
+                    try {
+                        const cachedData = JSON.parse(cachedDataStr);
+                        console.log('Serving News from cache...');
+                        renderNews(cachedData, true); // True means isCached
+                    } catch(e) {
+                         console.error('Cache parse error:', e);
+                    }
+                }
+
+                // 2. Fetch from API in background
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error('API Sync Failed');
+                    
+                    const result = await response.json();
+                    const newData = result.data || result;
+
+                    if (Array.isArray(newData)) {
+                        const newDataStr = JSON.stringify(newData);
+                        
+                        // 3. Compare and Update if different
+                        if (newDataStr !== cachedDataStr) {
+                            console.log('News updated! Refreshing UI...');
+                            renderNews(newData);
+                            localStorage.setItem(CACHE_KEY, newDataStr);
+                        } else {
+                            console.log('News is already up to date.');
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ News Background Fetch Error:', error);
+                    if (!cachedDataStr) {
+                        newsContainer.innerHTML = '<div class="text-center" style="grid-column: 1/-1;"><p style="color: red;">ডেটা লোড করতে সমস্যা হয়েছে।</p></div>';
+                    }
+                }
+            }
+
+            fetchNews();
+        });
+    </script>
 @endsection

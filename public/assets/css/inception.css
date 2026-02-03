@@ -21,7 +21,7 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 3rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -118,7 +118,7 @@
 
 .timeline-horizontal {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     position: relative;
 }
@@ -189,7 +189,7 @@
 
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 3rem;
 }
 
@@ -251,34 +251,31 @@
 }
 
 /* Responsive */
+/* Responsive Optimization */
+@media (max-width: 1200px) {
+    .timeline-horizontal, .stats-grid, .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .stats-hero h1 {
         font-size: 2rem;
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
     }
 
     .stat-number {
         font-size: 2.5rem;
     }
 
-    .story-wrapper {
+    .story-wrapper, .timeline-horizontal, .team-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .story-content {
         text-align: center;
-    }
-
-    .timeline-horizontal {
-        grid-template-columns: 1fr;
-    }
-
-    .team-grid {
-        grid-template-columns: 1fr;
     }
 }
