@@ -10,43 +10,49 @@
     <!-- Page Header -->
     <div class="page-header">
         <div class="container">
-            <h1 class="reveal-text">আমাদের মিশন ও ভিশন</h1>
-            <p class="reveal-text delay-100">জাতির উন্নয়নে আমাদের লক্ষ্য ও উদ্দেশ্য</p>
+            <h1 class="reveal-text">আমাদের লক্ষ্য ও দৃষ্টিভঙ্গ</h1>
+            <p class="reveal-text delay-100">জাতির উন্নয়নে আমাদের মিশন এবং ভিশন</p>
         </div>
     </div>
 
     <!-- Mission & Vision Content -->
     <section class="mission-section">
         <div class="container">
-            <!-- Mission Row -->
-            <div class="mission-row reveal-text">
-                <div class="mission-image">
-                    <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Our Mission">
+            <!-- Vision Row -->
+            <div class="mission-row reverse reveal-text" id="vision-row-container">
+                <div class="mission-image" id="vision-image-wrapper">
+                    <div class="skeleton skeleton-image"></div>
+                    <img id="vision-image" src="" alt="Our Vision" style="display: none;">
                 </div>
                 <div class="mission-content">
-                    <h2>আমাদের মিশন</h2>
-                    <p>আমাদের মূল লক্ষ্য হলো সমাজের সুবিধাবঞ্চিত মানুষের পাশে দাঁড়ানো এবং তাদের মৌলিক চাহিদা পূরণে সহায়তা করা। শিক্ষা, স্বাস্থ্য, এবং কর্মসংস্থানের মাধ্যমে একটি স্বনির্ভর ও সমৃদ্ধ সমাজ গড়ে তোলা।</p>
-                    <ul class="mission-list">
-                        <li><i class="fas fa-check-circle"></i> মানসম্মত শিক্ষা নিশ্চিতকরণ</li>
-                        <li><i class="fas fa-check-circle"></i> স্বাস্থ্যসেবা সহজলভ্য করা</li>
-                        <li><i class="fas fa-check-circle"></i> দরিদ্রদের পুনর্বাসন ও সহায়তা</li>
-                    </ul>
+                    <div id="vision-skeleton-content">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                    </div>
+                    <h2 id="vision-title" style="display: none;"></h2>
+                    <div id="vision-desc-container" style="display: none;"></div>
+                    <ul class="mission-list" id="vision-list" style="display: none;"></ul>
                 </div>
             </div>
 
-            <!-- Vision Row -->
-            <div class="mission-row reverse reveal-text delay-200">
-                <div class="mission-image">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Our Vision">
+            <!-- Mission Row -->
+            <div class="mission-row reveal-text delay-200" id="mission-row-container">
+                <div class="mission-image" id="mission-image-wrapper">
+                    <div class="skeleton skeleton-image"></div>
+                    <img id="mission-image" src="" alt="Our Mission" style="display: none;">
                 </div>
                 <div class="mission-content">
-                    <h2>আমাদের ভিশন</h2>
-                    <p>একটি বৈষম্যহীন সমাজ ব্যবস্থা যেখানে প্রতিটি মানুষ তার সম্ভাবনার সর্বোচ্চ বিকাশ ঘটাতে পারবে। আমাদের ভিশন হলো এমন একটি ভবিষ্যতে পৌঁছানো যেখানে দারিদ্র্য থাকবে না এবং সবাই মর্যাদার সাথে বাঁচতে পারবে।</p>
-                    <ul class="mission-list">
-                        <li><i class="fas fa-check-circle"></i> সামাজিক ন্যায়বিচার প্রতিষ্ঠা</li>
-                        <li><i class="fas fa-check-circle"></i> টেকসই উন্নয়ন লক্ষ্যমাত্রা অর্জন</li>
-                        <li><i class="fas fa-check-circle"></i> নারীর ক্ষমতায়ন ও সমঅধিকার</li>
-                    </ul>
+                    <div id="mission-skeleton-content">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                    </div>
+                    <h2 id="mission-title" style="display: none;"></h2>
+                    <div id="mission-desc-container" style="display: none;"></div>
+                    <ul class="mission-list" id="mission-list" style="display: none;"></ul>
                 </div>
             </div>
         </div>
@@ -113,4 +119,111 @@
             </div>
         </div>
     </section>
+@endsection
+
+@section('scripts')
+    <script>
+        async function fetchMissionData() {
+            const apiUrl = 'http://192.168.68.112:8001/api/our-missions';
+            const storageUrl = 'http://192.168.68.112:8001/storage/';
+            const MISSION_CACHE_KEY = 'mrp_mission_cache';
+            const VISION_CACHE_KEY = 'mrp_vision_cache';
+
+            const updateSectionUI = (type, data, isCached = false) => {
+                if (!data) return;
+                
+                const prefix = type === 'mission' ? 'mission' : 'vision';
+                const container = document.getElementById(`${prefix}-row-container`);
+                const titleEl = document.getElementById(`${prefix}-title`);
+                const descContainer = document.getElementById(`${prefix}-desc-container`);
+                const listEl = document.getElementById(`${prefix}-list`);
+                const imgEl = document.getElementById(`${prefix}-image`);
+                const skeletonContent = document.getElementById(`${prefix}-skeleton-content`);
+                const skeletonImage = document.querySelector(`#${prefix}-image-wrapper .skeleton-image`);
+
+                // 1. Hide Skeletons
+                if (skeletonContent) skeletonContent.style.display = 'none';
+                if (skeletonImage) skeletonImage.style.display = 'none';
+
+                // 2. Update Content
+                if (titleEl && data.title) {
+                    titleEl.textContent = data.title;
+                    titleEl.style.display = 'block';
+                }
+                
+                if (descContainer && data.description) {
+                    const originalDesc = data.description;
+                    const paragraphs = originalDesc.split('\n').filter(p => p.trim() !== '');
+                    descContainer.innerHTML = paragraphs.map(p => `<p style="margin-bottom: 1rem;">${p}</p>`).join('');
+                    descContainer.style.display = 'block';
+                }
+
+                if (imgEl && data.image) {
+                    const imgPath = data.image;
+                    imgEl.src = imgPath.startsWith('http') ? imgPath : storageUrl + imgPath;
+                    imgEl.style.display = 'block';
+                }
+
+                if (listEl && data.points) {
+                    const pointsArray = Array.isArray(data.points) ? data.points : 
+                                      (typeof data.points === 'string' ? data.points.split('\n').filter(p => p.trim() !== '') : []);
+                    
+                    if (pointsArray.length > 0) {
+                        listEl.innerHTML = pointsArray.map(p => {
+                            const pointText = typeof p === 'object' ? (p.text || p.title || p.point) : p;
+                            return `<li><i class="fas fa-check-circle"></i> ${pointText}</li>`;
+                        }).join('');
+                        listEl.style.display = 'block';
+                    }
+                }
+
+                // 3. Finalize Animations
+                if (container) {
+                    container.classList.add('active');
+                    const reveals = container.querySelectorAll('.reveal-text');
+                    reveals.forEach(el => {
+                        el.classList.add('active');
+                        el.style.opacity = '1';
+                        el.style.transform = isCached ? 'none' : 'translateY(0)';
+                    });
+                }
+            };
+
+            // 1. Try Cache Immediately (No Skeleton if Cache Exists)
+            const cachedMission = localStorage.getItem(MISSION_CACHE_KEY);
+            const cachedVision = localStorage.getItem(VISION_CACHE_KEY);
+            
+            if (cachedMission) {
+                try { updateSectionUI('mission', JSON.parse(cachedMission), true); } catch (e) {}
+            }
+            if (cachedVision) {
+                try { updateSectionUI('vision', JSON.parse(cachedVision), true); } catch (e) {}
+            }
+
+            // 2. Fetch API
+            try {
+                const response = await fetch(apiUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    const missionData = data.find(item => item.title.includes('মিশন'));
+                    const visionData = data.find(item => item.title.includes('ভিশন'));
+
+                    if (missionData) {
+                        updateSectionUI('mission', missionData, false);
+                        localStorage.setItem(MISSION_CACHE_KEY, JSON.stringify(missionData));
+                    }
+                    if (visionData) {
+                        updateSectionUI('vision', visionData, false);
+                        localStorage.setItem(VISION_CACHE_KEY, JSON.stringify(visionData));
+                    }
+                }
+            } catch (error) {
+                console.error('Mission/Vision Fetch Error:', error);
+                // On error, if no cache, we should at least stop skeleton animation or show something
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchMissionData);
+    </script>
 @endsection
