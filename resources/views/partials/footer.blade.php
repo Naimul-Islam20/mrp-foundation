@@ -34,9 +34,9 @@
             <div class="footer-widget reveal-text delay-100">
                 <h4 class="footer-title">আপডেট পেতে</h4>
                 <p style="color: #a0aec0; margin-bottom: 1rem" class="delay-200 reveal-text">আমাদের সকল কার্যক্রমের আপডেট পেতে আপনার ইমেইল দিয়ে সাবস্ক্রাইব করুন।</p>
-                <form class="newsletter-form reveal-text deley-300" onsubmit="event.preventDefault();">
-                    <input type="email" class="newsletter-input" placeholder="আপনার ইমেইল লিখুন" />
-                    <button type="submit" class="newsletter-btn">
+                <form id="newsletter-form" class="newsletter-form reveal-text deley-300">
+                    <input type="email" id="newsletter-email" name="email" class="newsletter-input" placeholder="আপনার ইমেইল লিখুন" required />
+                    <button type="submit" id="newsletter-btn" class="newsletter-btn">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </form>

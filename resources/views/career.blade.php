@@ -96,11 +96,29 @@
             </div>
 
             <div class="jobs-grid" id="jobs-container">
-                <!-- Jobs will be loaded here from API -->
-                <div class="text-center" style="grid-column: 1/-1; padding: 3rem;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--secondary-color); margin-bottom: 1rem;"></i>
-                    <p>পদসমূহ লোড হচ্ছে...</p>
+                <!-- Skeleton Loading State -->
+                @for ($i = 0; $i < 3; $i++)
+                <div class="job-card" style="opacity: 1; transform: none;">
+                    <div class="job-info">
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="job-meta">
+                            <div class="skeleton skeleton-meta"></div>
+                            <div class="skeleton skeleton-meta"></div>
+                            <div class="skeleton skeleton-meta"></div>
+                        </div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                        <div class="job-tags" style="margin-top: 1rem;">
+                            <div class="skeleton skeleton-tag"></div>
+                            <div class="skeleton skeleton-tag"></div>
+                        </div>
+                    </div>
+                    <div class="job-action">
+                        <div class="skeleton skeleton-btn"></div>
+                        <div class="skeleton skeleton-meta" style="width: 80px;"></div>
+                    </div>
                 </div>
+                @endfor
             </div>
         </div>
     </section>

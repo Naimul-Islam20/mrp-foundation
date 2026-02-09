@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Background Fetch
         try {
-            const response = await fetch('https://admin.mrpfoundation.net/api/our-details', {
+            const response = await fetch('http://192.168.68.112:8001/api/our-details', {
                 method: 'GET', headers: { 'Accept': 'application/json' }
             });
             if (response.ok) {
@@ -131,12 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('https://admin.mrpfoundation.net/api/vacancies');
+            const response = await fetch('http://192.168.68.112:8001/api/vacancies');
             const result = await response.json();
-            if (result.status && result.data) {
-                if (JSON.stringify(result.data) !== cached) {
-                    renderVacancies(result.data);
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(result.data));
+            const newData = result.data || result;
+            if (Array.isArray(newData)) {
+                if (JSON.stringify(newData) !== cached) {
+                    renderVacancies(newData);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(newData));
                 }
             }
         } catch (error) {
@@ -413,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/api/agent-registration', {
+                    const response = await fetch('http://192.168.68.112:8001/api/agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -562,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('https://admin.mrpfoundation.net/api/sub-agent-registration', {
+                    const response = await fetch('http://192.168.68.112:8001/api/sub-agent-registration', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -703,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                const response = await fetch('https://admin.mrpfoundation.net/api/member-registration', {
+                const response = await fetch('http://192.168.68.112:8001/api/member-registration', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -808,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('https://admin.mrpfoundation.net/api/contact', {
+                const response = await fetch('http://192.168.68.112:8001/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -900,7 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const formData = new FormData(jobApplicationForm);
                 
-                const response = await fetch('https://admin.mrpfoundation.net/api/apply-for-vacancy', {
+                const response = await fetch('http://192.168.68.112:8001/api/apply-for-vacancy', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -1075,6 +1076,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     fetchEvents();
+
+    // Newsletter Subscription
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletter-email');
+            const submitBtn = document.getElementById('newsletter-btn');
+            const originalBtnIcon = submitBtn.innerHTML;
+
+            if (!emailInput.value.trim()) return;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                const response = await fetch('http://192.168.68.112:8001/api/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email: emailInput.value.trim() })
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    alert('আপনার সাবস্ক্রিপশন সফল হয়েছে! ধন্যবাদ।');
+                    newsletterForm.reset();
+                } else {
+                    let errorMsg = result.message || 'সাবস্ক্রিপশন ব্যর্থ হয়েছে। দয়া করে আবার চেষ্টা করুন।';
+                    if (result.errors && result.errors.email) {
+                        errorMsg = result.errors.email[0];
+                    }
+                    alert(errorMsg);
+                }
+            } catch (error) {
+                console.error('Subscription Error:', error);
+                alert('একটি ত্রুটি ঘটেছে। দয়া করে পরে চেষ্টা করুন।');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnIcon;
+            }
+        });
+    }
 
     revealElements.forEach(el => {
         el.classList.add('reveal-text');
