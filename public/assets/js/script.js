@@ -10,15 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Function to update the UI
         const updateUI = (apiData) => {
-            const address = apiData.our_address || '';
-            const phone = apiData.our_phone ? apiData.our_phone.split(',').join('<br>') : '';
-            const email = apiData.our_email || '';
+            if (!apiData) return;
+            
+            // Extract data if it's the whole response
+            const info = (apiData.status && apiData.data && apiData.data[0]) ? apiData.data[0] : apiData;
+            
+            const address = info.our_address || '';
+            const phone = info.our_phone ? info.our_phone.split(',').join('<br>') : '';
+            const email = info.our_email || '';
 
             const contactAddr = document.getElementById('contact-address');
             const contactPhone = document.getElementById('contact-phone');
             const contactEmail = document.getElementById('contact-email');
             if (contactAddr) contactAddr.innerHTML = address;
-            if (contactPhone) contactPhone.innerHTML = phone;
+            if (contactPhone) {
+                contactPhone.innerHTML = phone;
+            } else {
+                // Also check by ID from app.blade.php if different
+                const cp = document.getElementById('contact-phone');
+                if (cp) cp.innerHTML = phone;
+            }
             if (contactEmail) contactEmail.innerText = email;
 
             const homeAddr = document.getElementById('home-address');
@@ -33,25 +44,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 footerAddr.innerHTML = `<i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px"></i> ${address}`;
             }
 
+            // Logo & Description (Previously in app.blade.php)
+            const logoContainer = document.getElementById('footer-logo-container');
+            if (logoContainer) {
+                if (info.logo) {
+                    const logoUrl = info.logo.startsWith('http') ? info.logo : STORAGE_BASE_URL + info.logo;
+                    logoContainer.innerHTML = `<img src="${logoUrl}" alt="MRP Foundation" style="max-height: 60px; width: auto;">`;
+                } else if (info.title) {
+                    logoContainer.innerHTML = `<h3><i class="fas fa-hands-helping"></i> ${info.title}</h3>`;
+                }
+            }
+
+            const footerDesc = document.getElementById('footer-desc');
+            if (footerDesc && info.footer_description) {
+                footerDesc.textContent = info.footer_description;
+            }
+
             const updateSocialLink = (iconClass, link) => {
                 if (!link) return;
                 document.querySelectorAll(`.social-link i.${iconClass}`).forEach(icon => {
                     const anchor = icon.closest('a');
                     if (anchor) anchor.href = link;
                 });
+                // Also check IDs used in footer
+                const ids = {
+                    'fa-facebook-f': 'footer-fb',
+                    'fa-twitter': 'footer-twitter',
+                    'fa-instagram': 'footer-insta',
+                    'fa-linkedin-in': 'footer-linkedin'
+                };
+                if (ids[iconClass]) {
+                    const el = document.getElementById(ids[iconClass]);
+                    if (el) el.href = link;
+                }
             };
-            updateSocialLink('fa-facebook-f', apiData.fb_link);
-            updateSocialLink('fa-facebook', apiData.fb_link);
-            updateSocialLink('fa-twitter', apiData.twitter_link);
-            updateSocialLink('fa-instagram', apiData.insta_link);
-            updateSocialLink('fa-linkedin-in', apiData.linkedin_link);
-            updateSocialLink('fa-linkedin', apiData.linkedin_link);
+            updateSocialLink('fa-facebook-f', info.fb_link);
+            updateSocialLink('fa-facebook', info.fb_link);
+            updateSocialLink('fa-twitter', info.twitter_link);
+            updateSocialLink('fa-instagram', info.insta_link);
+            updateSocialLink('fa-linkedin-in', info.linkedin_link);
+            updateSocialLink('fa-linkedin', info.linkedin_link);
         };
 
         // 1. Try Cache
         const cached = localStorage.getItem(CACHE_KEY);
         if (cached) {
-            updateUI(JSON.parse(cached));
+            try {
+                updateUI(JSON.parse(cached));
+            } catch (e) {
+                console.error('Cache parse error:', e);
+            }
         }
 
         // 2. Background Fetch
@@ -62,11 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const result = await response.json();
                 if (result.status && result.data && result.data.length > 0) {
-                    const apiData = result.data[0];
-                    if (JSON.stringify(apiData) !== cached) {
-                        updateUI(apiData);
-                        localStorage.setItem(CACHE_KEY, JSON.stringify(apiData));
-                    }
+                    // Store the WHOLE response to be consistent with other scripts
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(result));
+                    updateUI(result);
                 }
             }
         } catch (error) { console.error('Details Fetch Error:', error); }

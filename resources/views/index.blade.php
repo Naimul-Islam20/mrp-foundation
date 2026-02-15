@@ -188,12 +188,18 @@
           </div>
 
           <!-- Map -->
-          <div class="contact-map reveal-text delay-200">
+          <div class="contact-map reveal-text delay-200" style="position: relative; overflow: hidden; background: #eee; display: flex; align-items: center; justify-content: center; min-height: 350px; border-radius: 12px;">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.902442430139!2d90.39108031536267!3d23.75085809467746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b888ad3f983d%3A0x20c70986185ad2ba!2sDhanmondi%2C%20Dhaka%201205!5e0!3m2!1sen!2sbd!4v1649934177399!5m2!1sen!2sbd"
+              id="home-contact-map"
+              src=""
               loading="lazy"
+              style="border:0; display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
               referrerpolicy="no-referrer-when-downgrade"
             ></iframe>
+            <div id="home-map-placeholder" style="text-align: center; color: #999;">
+                <i class="fas fa-map-marked-alt" style="font-size: 2.5rem; margin-bottom: 1rem; display: block;"></i>
+                <p>ম্যাপ লোড হচ্ছে...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -266,6 +272,48 @@
                     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
                 })
                 .catch(error => console.error('Error fetching home data:', error));
+
+            // Map Logic from Cache
+            function loadHomeMap() {
+                const mapIframe = document.getElementById('home-contact-map');
+                const placeholder = document.getElementById('home-map-placeholder');
+                if (!mapIframe) return false;
+                
+                const cached = localStorage.getItem('mrp_details_cache');
+                if (cached) {
+                    try {
+                        const cachedData = JSON.parse(cached);
+                        const info = (cachedData.status && cachedData.data && cachedData.data[0]) ? cachedData.data[0] : cachedData;
+                        
+                        if (info && info.map_url) {
+                            let embedUrl = info.map_url;
+                            
+                            if (embedUrl.includes('google.com/maps') && !embedUrl.includes('/embed')) {
+                                const coordMatch = embedUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                                if (coordMatch) {
+                                    embedUrl = `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14607.0!2d${coordMatch[2]}!3d${coordMatch[1]}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sbd!4v1`;
+                                }
+                            }
+                            
+                            mapIframe.src = embedUrl;
+                            mapIframe.style.display = 'block';
+                            if (placeholder) placeholder.style.display = 'none';
+                            return true;
+                        }
+                    } catch (e) {}
+                }
+                return false;
+            }
+
+            let mapLoaded = loadHomeMap();
+            if (!mapLoaded) {
+                let attempts = 0;
+                const poll = setInterval(() => {
+                    attempts++;
+                    mapLoaded = loadHomeMap();
+                    if (mapLoaded || attempts > 10) clearInterval(poll);
+                }, 1000);
+            }
         });
     </script>
 @endsection

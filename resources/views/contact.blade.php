@@ -95,17 +95,98 @@
             </div>
 
             <!-- Map Section -->
-            <div class="full-width-map mt-2 reveal-text delay-300" style="border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); height: 400px;">
+            <div class="full-width-map mt-2 reveal-text delay-300" style="border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); height: 400px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; position: relative;">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.902442430139!2d90.39108031536267!3d23.75085809467746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b888ad3f983d%3A0x20c70986185ad2ba!2sDhanmondi%2C%20Dhaka%201205!5e0!3m2!1sen!2sbd!4v1649934177399!5m2!1sen!2sbd" 
+                    id="contact-map"
+                    src="" 
                     width="100%" 
                     height="100%" 
-                    style="border:0;" 
+                    style="border:0; display: none; position: absolute; top: 0; left: 0;" 
                     allowfullscreen="" 
                     loading="lazy" 
                     referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
+                <div id="map-placeholder" style="text-align: center; color: #999;">
+                    <i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                    <p>ম্যাপ লোড হচ্ছে...</p>
+                </div>
             </div>
+            
+            <script>
+                // Update map from cached API data
+                function loadMap() {
+                    const mapIframe = document.getElementById('contact-map');
+                    const placeholder = document.getElementById('map-placeholder');
+                    
+                    const cached = localStorage.getItem('mrp_details_cache');
+                    if (cached) {
+                        try {
+                            const cachedData = JSON.parse(cached);
+                            // Handle both formats: direct object or wrapped in result.data[0]
+                            const data = (cachedData.status && cachedData.data && cachedData.data[0]) ? cachedData.data[0] : cachedData;
+                            
+                            if (data && data.map_url) {
+                                let embedUrl = data.map_url;
+                                
+                                // If it's a regular Google Maps URL, convert to embed URL
+                                if (embedUrl.includes('google.com/maps') && !embedUrl.includes('/embed')) {
+                                    // Extract coordinates or place info from URL
+                                    const placeMatch = embedUrl.match(/place\/([^\/]+)/);
+                                    const coordMatch = embedUrl.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                                    
+                                    if (coordMatch) {
+                                        // Use coordinates
+                                        const lat = coordMatch[1];
+                                        const lng = coordMatch[2];
+                                        embedUrl = `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14607.0!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sbd!4v1`;
+                                    } else if (placeMatch) {
+                                        // Use place name
+                                        const place = placeMatch[1];
+                                        
+                                        embedUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(place.replace(/\+/g, ' '))}`;
+                                    }
+                                }
+                                
+                                // Set map URL and show it
+                                mapIframe.src = embedUrl;
+                                mapIframe.style.display = 'block';
+                                if (placeholder) placeholder.style.display = 'none';
+                                return true; // Successfully loaded
+                            }
+                        } catch (e) {
+                            console.error('Map URL update error:', e);
+                        }
+                    }
+                    return false;
+                }
+                
+                document.addEventListener('DOMContentLoaded', function() {
+                    const placeholder = document.getElementById('map-placeholder');
+                    
+                    // Try to load map immediately
+                    let loaded = loadMap();
+                    
+                    // If not loaded, keep trying with polling
+                    if (!loaded) {
+                        let attempts = 0;
+                        const maxAttempts = 10; // Try for 5 seconds
+                        
+                        const pollInterval = setInterval(() => {
+                            attempts++;
+                            loaded = loadMap();
+                            
+                            if (loaded || attempts >= maxAttempts) {
+                                clearInterval(pollInterval);
+                                
+                                // If still not loaded after all attempts, show error
+                                if (!loaded && placeholder) {
+                                    placeholder.innerHTML = '<i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i><p>ম্যাপ URL পাওয়া যায়নি</p>';
+                                }
+                            }
+                        }, 500); // Check every 500ms
+                    }
+                });
+            </script>
         </div>
     </section>
 
