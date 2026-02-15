@@ -102,17 +102,17 @@
                             <input type="file" id="husbandDocs" name="husbands_information" class="form-control">
                         </div>
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="signedForm" class="form-label">গণ্যমান্য ব্যক্তির স্বাক্ষরিত ফরম <span style="color: red;">*</span></label>
                             <input type="file" id="signedForm" name="considerable_person_sign" class="form-control" required>
                             <div class="error-message">দয়া করে স্বাক্ষরিত ফরমটি আপলোড করুন।</div>
-                        </div>
+                        </div> -->
 
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="bankChecks" class="form-label">ব্যাংক চেক ও চুক্তিনামা <span style="color: red;">*</span></label>
                             <input type="file" id="bankChecks" name="bank_check" class="form-control" required multiple>
                             <div class="error-message">দয়া করে চেক এবং চুক্তিনামা আপলোড করুন।</div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group">
                             <label for="tradeLicense" class="form-label">ট্রেড লাইসেন্স <span style="color: red;">*</span></label>

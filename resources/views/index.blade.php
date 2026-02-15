@@ -5,21 +5,89 @@
 @section('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/about.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/contact.css') }}" />
+    <style>
+        .image-skeleton-wrapper {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+        .image-skeleton-wrapper.skeleton img {
+            opacity: 0;
+        }
+        .image-skeleton-wrapper img {
+            transition: opacity 0.3s ease-in;
+            opacity: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 @endsection
 
 @section('content')
     <!-- Hero Section -->
     <section class="hero">
+      <script>
+        (function() {
+            const cached = localStorage.getItem('mrp_home_cache');
+            if (cached) {
+                try {
+                    const data = JSON.parse(cached);
+                    const STORAGE_URL = STORAGE_BASE_URL;
+                    
+                    // Hero Data
+                    const heroData = data.find(item => item.id === 1);
+                    if (heroData) {
+                        document.write('<style>#hero-title, #hero-description, #hero-image-src { visibility: hidden; }</style>');
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const title = document.getElementById('hero-title');
+                            const desc = document.getElementById('hero-description');
+                            const img = document.getElementById('hero-image-src');
+                            
+                            if (title) title.textContent = heroData.title;
+                            if (desc) desc.textContent = heroData.description;
+                            if (img && heroData.image) {
+                                img.src = heroData.image.startsWith('http') ? heroData.image : STORAGE_URL + heroData.image;
+                                // Skeleton will be removed by onload attribute on img
+                            }
+                            
+                            if (title) title.style.visibility = 'visible';
+                            if (desc) desc.style.visibility = 'visible';
+                            if (img) img.style.visibility = 'visible';
+                        });
+                    }
+
+                    // About Data
+                    const aboutData = data.find(item => item.id === 2);
+                    if (aboutData) {
+                        document.write('<style>#about-subtitle, #about-description, #about-image-src { visibility: hidden; }</style>');
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const title = document.getElementById('about-subtitle');
+                            const desc = document.getElementById('about-description');
+                            const img = document.getElementById('about-image-src');
+                            
+                            if (title) title.textContent = aboutData.title;
+                            if (desc) desc.textContent = aboutData.description;
+                            if (img && aboutData.image) {
+                                img.src = aboutData.image.startsWith('http') ? aboutData.image : STORAGE_URL + aboutData.image;
+                            }
+                            
+                            if (title) title.style.visibility = 'visible';
+                            if (desc) desc.style.visibility = 'visible';
+                            if (img) img.style.visibility = 'visible';
+                        });
+                    }
+                } catch (e) {}
+            }
+        })();
+      </script>
       <div class="container hero-container">
         <div class="hero-text">
-          <h1 class="reveal-text delay-100">
-            আমাদের দেশজুড়ে এজেন্ট নেটওয়ার্কে যোগ দিন
-          </h1>
-          <p class="reveal-text delay-200">
-            MRP Foundation এর সাথে আপনার ব্যবসা সম্প্রসারণ করুন। আমরা দিচ্ছি
-            আকর্ষণীয় লাভে এজেন্টশিপের সুযোগ। সুবিধাবঞ্চিত মানুষের সেবার
-            পাশাপাশি নিশ্চিত করুন নিজের আর্থিক সমৃদ্ধি।
-          </p>
+          <h1 class="reveal-text delay-100" id="hero-title"></h1>
+          <p class="reveal-text delay-200" id="hero-description"></p>
           <a
             href="{{ route('become-agent') }}"
             class="btn btn-primary reveal-text delay-300"
@@ -33,10 +101,14 @@
           >
         </div>
         <div class="hero-image">
-          <img
-            src="{{ asset('assets/images/hero-side.png') }}"
-            alt="Volunteers helping community"
-          />
+          <div class="image-skeleton-wrapper skeleton" id="hero-skeleton">
+            <img
+              id="hero-image-src"
+              src="{{ asset('assets/images/placeholder-transparent.png') }}"
+              alt="Volunteers helping community"
+              onload="this.parentElement.classList.remove('skeleton')"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -48,43 +120,24 @@
 
         <div class="about-container">
           <div class="about-image reveal-text">
-            <img
-              src="{{ asset('assets/images/about-dealer.png') }}"
-              alt="Business Partnership"
-            />
+            <div class="image-skeleton-wrapper skeleton" id="about-skeleton">
+              <img
+                id="about-image-src"
+                src="{{ asset('assets/images/placeholder-transparent.png') }}"
+                alt="Business Partnership"
+                onload="this.parentElement.classList.remove('skeleton')"
+              />
+            </div>
           </div>
           <div class="about-content">
             <h3
+              id="about-subtitle"
               class="mb-1 reveal-text delay-100"
               style="color: var(--primary-dark)"
-            >
-              উজ্জ্বল ভবিষ্যতের পথে আপনার বিশ্বস্ত সঙ্গী
-            </h3>
-            <p class="mb-1 reveal-text delay-200">
-              এমআরপি ফাউন্ডেশন দীর্ঘ এক দশক ধরে সুনামের সাথে কার্যক্রম পরিচালনা
-              করে আসছে। আমাদের উৎপাদিত পণ্য গুণগত মানের দিক থেকে সর্বদা সেরা।
-              আমরা বিশ্বাস করি পারস্পরিক সহযোগিতার ভিত্তিতেই একটি শক্তিশালী
-              ব্যবসায়িক সম্পর্ক গড়ে ওঠে।
-            </p>
+            ></h3>
+            <p id="about-description" class="mb-1 reveal-text delay-200"></p>
 
-            <ul class="benefits-list reveal-text delay-200">
-              <li class="">
-                <i class="fas fa-check-circle"></i> সর্বোচ্চ কমিশন ও আকর্ষণীয়
-                ইনসেনটিভ
-              </li>
-              <li class="">
-                <i class="fas fa-check-circle"></i> নিয়মিত পণ্য সরবরাহ ও
-                লজিস্টিক সাপোর্ট
-              </li>
-              <li class="">
-                <i class="fas fa-check-circle"></i> এলাকাভিত্তিক একচেটিয়া
-                এজেন্ট সুবিধা
-              </li>
-              <li class="">
-                <i class="fas fa-check-circle"></i> বার্ষিক ব্যবসায়িক সম্মেলন ও
-                বিদেশ ভ্রমণ
-              </li>
-            </ul>
+            <ul id="about-benefits-list" class="benefits-list reveal-text delay-200"></ul>
 
             <a
               href="{{ route('become-agent') }}"
@@ -109,10 +162,7 @@
               </div>
               <div class="contact-details">
                 <h4>আমাদের ঠিকানা</h4>
-                <p id="home-address">
-                    <i class="fas fa-map-marker-alt" style="color: var(--secondary-color); margin-right: 5px"></i>
-                    হাউজ #১/এ, রোড #৬, সেক্টর #৩, উত্তরা মডেল টাউন, উত্তরা, ঢাকা-১২৩০
-                </p>
+                <p id="home-address"></p>
               </div>
             </div>
 
@@ -122,7 +172,7 @@
               </div>
               <div class="contact-details">
                 <h4>ফোন নম্বর</h4>
-                <p id="home-phone">+৮৮০ ১২৩৪ ৫৬৭৮৯০<br />+৮৮০ ৯৮৭৬ ৫৪৩২১০</p>
+                <p id="home-phone"></p>
               </div>
             </div>
 
@@ -132,7 +182,7 @@
               </div>
               <div class="contact-details">
                 <h4>ইমেইল</h4>
-                <p id="home-email">mrpfoundation19@gmail.com</p>
+                <p id="home-email"></p>
               </div>
             </div>
           </div>
@@ -149,3 +199,74 @@
       </div>
     </section>
 @endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const API_URL = `${API_BASE_URL}/homes`;
+            const STORAGE_URL = STORAGE_BASE_URL;
+            const CACHE_KEY = 'mrp_home_cache';
+
+            function updateHomeUI(data) {
+                if (!data) return;
+
+                // Hero Data (Usually id 1)
+                const heroData = data.find(item => item.id === 1);
+                if (heroData) {
+                    const heroTitle = document.getElementById('hero-title');
+                    const heroDesc = document.getElementById('hero-description');
+                    const heroImg = document.getElementById('hero-image-src');
+
+                    if (heroTitle) heroTitle.textContent = heroData.title;
+                    if (heroDesc) heroDesc.textContent = heroData.description;
+                    if (heroImg && heroData.image) {
+                        heroImg.src = heroData.image.startsWith('http') ? heroData.image : STORAGE_URL + heroData.image;
+                    }
+                }
+
+                // About Data (Usually id 2)
+                const aboutData = data.find(item => item.id === 2);
+                if (aboutData) {
+                    const aboutSubtitle = document.getElementById('about-subtitle');
+                    const aboutDesc = document.getElementById('about-description');
+                    const aboutImg = document.getElementById('about-image-src');
+                    const aboutBenefitsList = document.getElementById('about-benefits-list');
+
+                    if (aboutSubtitle) aboutSubtitle.textContent = aboutData.title;
+                    if (aboutDesc) aboutDesc.textContent = aboutData.description;
+                    if (aboutImg && aboutData.image) {
+                        aboutImg.src = aboutData.image.startsWith('http') ? aboutData.image : STORAGE_URL + aboutData.image;
+                    }
+
+                    if (aboutBenefitsList && aboutData.points && aboutData.points.length > 0) {
+                        aboutBenefitsList.innerHTML = aboutData.points.map(point => `
+                            <li>
+                                <i class="fas fa-check-circle"></i> ${point}
+                            </li>
+                        `).join('');
+                    }
+                }
+            }
+
+            // Load from cache first
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            if (cachedData) {
+                try {
+                    updateHomeUI(JSON.parse(cachedData));
+                } catch (e) {
+                    console.error('Cache parse error:', e);
+                }
+            }
+
+            // Fetch from API
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    updateHomeUI(data);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                })
+                .catch(error => console.error('Error fetching home data:', error));
+        });
+    </script>
+@endsection
+

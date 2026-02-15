@@ -12,7 +12,7 @@
 
     <div class="container">
         <div class="form-container">
-            <form id="memberForm">
+            <form id="memberForm" novalidate>
                 @csrf
                 <!-- Personal Information -->
                 <h3 class="form-section-header reveal-text"><i class="fas fa-user"></i> ব্যক্তিগত তথ্য</h3>
@@ -31,20 +31,24 @@
                     </label>
                     <input type="file" id="photoInput" name="image" accept="image/*" required>
                     <p style="font-size: 0.8rem; color: #718096; margin-top: 5px;">গরিষ্ট সাইজ: ২ এমবি (JPG, PNG)</p>
+                    <div class="error-message" style="width: 100%;">দয়া করে ছবি আপলোড করুন।</div>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">নাম *</label>
                         <input type="text" name="name" class="form-control" placeholder="আপনার পূর্ণ নাম" required>
+                        <div class="error-message">দয়া করে আপনার পূর্ণ নাম লিখুন।</div>
                     </div>
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">পিতার নাম *</label>
                         <input type="text" name="father_name" class="form-control" placeholder="পিতার নাম লিখুন" required>
+                        <div class="error-message">দয়া করে পিতার নাম লিখুন।</div>
                     </div>
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">মাতার নাম *</label>
                         <input type="text" name="mother_name" class="form-control" placeholder="মাতার নাম লিখুন" required>
+                        <div class="error-message">দয়া করে মাতার নাম লিখুন।</div>
                     </div>
                 </div>
 
@@ -52,14 +56,17 @@
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">ফ্যামিলি সদস্য সংখ্যা *</label>
                         <input type="number" name="family_member_num" class="form-control" placeholder="সদস্য সংখ্যা" required>
+                        <div class="error-message">দয়া করে পরিবারের সদস্য সংখ্যা উল্লেখ করুন।</div>
                     </div>
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">ভোটার আইডি (NID) নম্বর *</label>
                         <input type="text" name="nid_no" class="form-control" placeholder="NID নম্বর" required>
+                        <div class="error-message">দয়া করে NID নম্বর প্রদান করুন।</div>
                     </div>
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">মোবাইল নম্বর *</label>
                         <input type="tel" name="phone" class="form-control" placeholder="০১৮XXXXXXXX" required>
+                        <div class="error-message">দয়া করে মোবাইল নম্বর প্রদান করুন।</div>
                     </div>
                 </div>
 
@@ -74,10 +81,12 @@
                             <option value="Buddhist">বৌদ্ধ</option>
                             <option value="Other">অন্যান্য</option>
                         </select>
+                        <div class="error-message">দয়া করে ধর্ম নির্বাচন করুন।</div>
                     </div>
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">জাতীয়তা *</label>
                         <input type="text" name="nationality" class="form-control" value="বাংলাদেশী" required>
+                        <div class="error-message">জাতীয়তা আবশ্যক।</div>
                     </div>
                     <div class="form-group reveal-text delay-200">
                         <label class="form-label">বৈবাহিক অবস্থা *</label>
@@ -87,6 +96,7 @@
                             <option value="Married">বিবাহিত</option>
                             <option value="Divorced">বিপত্নীক/বিধবা</option>
                         </select>
+                        <div class="error-message">দয়া করে বৈবাহিক অবস্থা নির্বাচন করুন।</div>
                     </div>
                 </div>
 

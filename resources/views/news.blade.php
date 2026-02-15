@@ -39,8 +39,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const newsContainer = document.getElementById('news-container');
-            const apiUrl = 'http://192.168.68.112:8001/api/news';
-            const storageUrl = 'http://192.168.68.112:8001/storage/';
+            const apiUrl = `${API_BASE_URL}/news`;
+            const storageUrl = STORAGE_BASE_URL;
             const CACHE_KEY = 'mrp_news_cache_v1';
 
             // Function to render news cards

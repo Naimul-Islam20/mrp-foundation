@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Background Fetch
         try {
-            const response = await fetch('http://192.168.68.112:8001/api/our-details', {
+            const response = await fetch(`${API_BASE_URL}/our-details`, {
                 method: 'GET', headers: { 'Accept': 'application/json' }
             });
             if (response.ok) {
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('http://192.168.68.112:8001/api/vacancies');
+            const response = await fetch(`${API_BASE_URL}/vacancies`);
             const result = await response.json();
             const newData = result.data || result;
             if (Array.isArray(newData)) {
@@ -336,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const signatureInput = document.getElementById('signatureInput');
             
             let isValid = true;
+            let firstErrorField = null;
             const controls = agentForm.querySelectorAll('.form-control, #consent');
             
             controls.forEach(control => {
@@ -344,6 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!control.checked) {
                         if (consentError) consentError.style.display = 'block';
                         isValid = false;
+                        if (!firstErrorField) firstErrorField = control.parentElement;
                     } else {
                         if (consentError) consentError.style.display = 'none';
                     }
@@ -352,6 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (control.hasAttribute('required') && value === '') {
                         control.classList.add('error');
                         isValid = false;
+                        if (!firstErrorField) firstErrorField = control;
                     } else {
                         control.classList.remove('error');
                     }
@@ -363,6 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('আপনি ২টির বেশি ছবি আপলোড করতে পারবেন না।');
                 photoInput.classList.add('error');
                 isValid = false;
+                if (!firstErrorField) firstErrorField = photoInput;
             }
 
             // Signature validation
@@ -372,6 +376,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sigWrapper) sigWrapper.style.borderColor = 'var(--error)';
                 if (sigError) sigError.style.display = 'block';
                 isValid = false;
+                if (!firstErrorField) firstErrorField = canvas;
+            }
+
+            if (!isValid) {
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (firstErrorField.focus) firstErrorField.focus({ preventScroll: true });
+                }
+                return;
             }
 
             if (isValid) {
@@ -414,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('http://192.168.68.112:8001/api/agent-registration', {
+                    const response = await fetch(`${API_BASE_URL}/agent-registration`, {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -492,6 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const signatureInput = document.getElementById('signatureInput');
             
             let isValid = true;
+            let firstErrorField = null;
             const controls = subAgentForm.querySelectorAll('.form-control, #consent');
             
             controls.forEach(control => {
@@ -500,6 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!control.checked) {
                         if (consentError) consentError.style.display = 'block';
                         isValid = false;
+                        if (!firstErrorField) firstErrorField = control.parentElement;
                     } else {
                         if (consentError) consentError.style.display = 'none';
                     }
@@ -508,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (control.hasAttribute('required') && value === '') {
                         control.classList.add('error');
                         isValid = false;
+                        if (!firstErrorField) firstErrorField = control;
                     } else {
                         control.classList.remove('error');
                     }
@@ -521,6 +537,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sigWrapper) sigWrapper.style.borderColor = 'var(--error)';
                 if (sigError) sigError.style.display = 'block';
                 isValid = false;
+                if (!firstErrorField) firstErrorField = canvas;
+            }
+
+            if (!isValid) {
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (firstErrorField.focus) firstErrorField.focus({ preventScroll: true });
+                }
+                return;
             }
 
             if (isValid) {
@@ -563,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                     
-                    const response = await fetch('http://192.168.68.112:8001/api/sub-agent-registration', {
+                    const response = await fetch(`${API_BASE_URL}/sub-agent-registration`, {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json'
@@ -653,6 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Simple validation
             let isValid = true;
+            let firstErrorField = null;
             const requiredFields = memberForm.querySelectorAll('[required]');
             requiredFields.forEach(field => {
                 if (field.id === 'consent') {
@@ -663,11 +689,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         if (consentError) consentError.style.display = 'none';
                     }
+                } else if (field.type === 'file' && field.id === 'photoInput') {
+                    if (field.files.length === 0) {
+                         const wrapper = field.closest('.photo-upload-wrapper');
+                         const errorMsg = wrapper.querySelector('.error-message');
+                         if (errorMsg) errorMsg.style.display = 'block';
+                         wrapper.classList.add('error'); // Optional, specific styling for wrapper
+                         isValid = false;
+                         if (!firstErrorField) firstErrorField = wrapper;
+                    } else {
+                         const wrapper = field.closest('.photo-upload-wrapper');
+                         const errorMsg = wrapper.querySelector('.error-message');
+                         if (errorMsg) errorMsg.style.display = 'none';
+                         wrapper.classList.remove('error');
+                    }
                 } else if (!field.value.trim()) {
                     field.classList.add('error');
                     isValid = false;
+                    // Ensure error message is visible if not handled by CSS
+                    const errorMsg = field.parentElement.querySelector('.error-message');
+                    if (errorMsg) errorMsg.style.display = 'block';
+                    
+                    if (!firstErrorField) firstErrorField = field;
                 } else {
                     field.classList.remove('error');
+                    const errorMsg = field.parentElement.querySelector('.error-message');
+                    if (errorMsg) errorMsg.style.display = 'none';
                 }
             });
 
@@ -678,10 +725,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sigWrapper) sigWrapper.style.borderColor = 'var(--error)';
                 if (sigError) sigError.style.display = 'block';
                 isValid = false;
+                if (!firstErrorField) firstErrorField = canvas;
             }
 
             if (!isValid) {
-                alert('দয়া করে সকল প্রয়োজনীয় তথ্য পূরণ করুন।');
+                if (firstErrorField) {
+                     firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                     if (firstErrorField.focus) firstErrorField.focus({ preventScroll: true });
+                }
+                // Optional: alert('দয়া করে সকল প্রয়োজনীয় তথ্য পূরণ করুন।');
                 return;
             }
             
@@ -704,7 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                const response = await fetch('http://192.168.68.112:8001/api/member-registration', {
+                const response = await fetch(`${API_BASE_URL}/member-registration`, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -809,7 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = {};
                 formDataObj.forEach((value, key) => data[key] = value);
                 
-                const response = await fetch('http://192.168.68.112:8001/api/contact', {
+                const response = await fetch(`${API_BASE_URL}/contact`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -901,7 +953,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const formData = new FormData(jobApplicationForm);
                 
-                const response = await fetch('http://192.168.68.112:8001/api/apply-for-vacancy', {
+                const response = await fetch(`${API_BASE_URL}/apply-for-vacancy`, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json'
@@ -1000,8 +1052,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const eventsContainer = document.getElementById('events-container');
         if (!eventTitle && !eventsContainer) return;
 
-        const apiUrl = 'http://192.168.68.112:8001/api/event';
-        const storageUrl = 'http://192.168.68.112:8001/storage/';
+        const apiUrl = `${API_BASE_URL}/event`;
+        const storageUrl = STORAGE_BASE_URL;
         const CACHE_KEY = 'mrp_events_cache';
 
         const updateUI = (data) => {
@@ -1092,7 +1144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-                const response = await fetch('http://192.168.68.112:8001/api/subscribe', {
+                const response = await fetch(`${API_BASE_URL}/subscribe`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

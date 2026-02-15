@@ -124,8 +124,8 @@
 @section('scripts')
     <script>
         async function fetchMissionData() {
-            const apiUrl = 'http://192.168.68.112:8001/api/our-missions';
-            const storageUrl = 'http://192.168.68.112:8001/storage/';
+            const apiUrl = `${API_BASE_URL}/our-missions`;
+            const storageUrl = STORAGE_BASE_URL;
             const MISSION_CACHE_KEY = 'mrp_mission_cache';
             const VISION_CACHE_KEY = 'mrp_vision_cache';
 

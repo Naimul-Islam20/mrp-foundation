@@ -126,8 +126,8 @@
     <script>
         // Fetch and Populate Inception Story
         async function fetchInceptionData() {
-            const apiUrl = 'http://192.168.68.112:8001/api/our-initials';
-            const storageUrl = 'http://192.168.68.112:8001/storage/';
+            const apiUrl = `${API_BASE_URL}/our-initials`;
+            const storageUrl = STORAGE_BASE_URL;
             const CACHE_KEY = 'mrp_inception_cache';
             
             const titleEl = document.getElementById('inception-title');
@@ -236,7 +236,7 @@
 
         // Fetch and Populate Milestones Timeline
         async function fetchMilestones() {
-            const apiUrl = 'http://192.168.68.112:8001/api/our-milestones';
+            const apiUrl = `${API_BASE_URL}/our-milestones`;
             const CACHE_KEY = 'mrp_milestones_cache';
             const container = document.getElementById('milestones-container');
             if (!container) return;
@@ -291,8 +291,8 @@
 
         // Fetch and Populate Leadership Team
         async function fetchLeadershipData() {
-            const apiUrl = 'http://192.168.68.112:8001/api/our-leaderships';
-            const storageUrl = 'http://192.168.68.112:8001/storage/';
+            const apiUrl = `${API_BASE_URL}/our-leaderships`;
+            const storageUrl = STORAGE_BASE_URL;
             const CACHE_KEY = 'mrp_leadership_cache';
             const container = document.getElementById('team-grid');
             if (!container) return;

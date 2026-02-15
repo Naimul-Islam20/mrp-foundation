@@ -535,25 +535,17 @@
                 data.additional_info = `অবস্থান: ${data.location}. ${data.additional_info || ''}`;
             }
 
-            const apiUrl = 'http://192.168.68.112:8001/api/event-registration';
-            const fallbackUrl = 'http://localhost:8001/api/event-registration';
+            const apiUrl = `${API_BASE_URL}/event-registration`;
 
             try {
-                let response;
-                const options = {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify(data)
-                };
-
-                try {
-                    response = await fetch(apiUrl, options);
-                } catch (err) {
-                    response = await fetch(fallbackUrl, options);
-                }
+                });
 
                 const result = await response.json();
 

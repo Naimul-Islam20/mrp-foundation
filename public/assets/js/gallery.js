@@ -81,7 +81,7 @@ function renderGallery(data) {
 // Stale-While-Revalidate Fetch
 async function fetchGallery() {
     if (!galleryContainer) return;
-    const apiUrl = 'http://192.168.68.112:8001/api/photo-galleries';
+    const apiUrl = `${API_BASE_URL}/photo-galleries`;
     
     // 1. Load from Cache
     const cachedDataStr = localStorage.getItem(CACHE_KEY);
