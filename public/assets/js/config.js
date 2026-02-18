@@ -3,8 +3,8 @@
 // ==========================================
 //              LIVE SERVER (Comment out for local testing)
 // ==========================================
-const API_BASE_URL = 'https://mrpfoundation.net/api';
-const STORAGE_BASE_URL = 'https://mrpfoundation.net/storage/';
+const API_BASE_URL = 'https://admin.mrpfoundation.net/api';
+const STORAGE_BASE_URL = 'https://admin.mrpfoundation.net/storage/';
 
 // ==========================================
 //              LOCAL SERVER
