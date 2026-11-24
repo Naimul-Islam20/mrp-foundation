@@ -247,6 +247,19 @@
                     </div>
                 </div>
 
+                <!-- Terms & Conditions -->
+                <h3 class="form-section-header reveal-text"><i class="fas fa-file-contract"></i> টার্মস এন্ড কন্ডিশন</h3>
+                <div class="si-terms reveal-text">
+                    <ol>
+                        <li>নির্দিষ্ট মেয়াদের পূর্বে কোনোভাবেই টাকা উত্তোলন করা যাবে না।</li>
+                        <li>বিশেষ কারণে উত্তোলন করতে চাইলে ন্যূনতম দুই বছর আগে আবেদন করতে হবে। সেক্ষেত্রে কোনো প্রকার প্রফিট শেয়ার করা হবে না এবং সার্ভিস চার্জ কর্তন করে জমা টাকা ফেরত দেওয়া হবে।</li>
+                        <li>সদস্যের মৃত্যুতে টাকা উত্তোলন করতে চাইলে নমিনির বাড়িতে সমস্ত জমা টাকা পৌঁছে দেওয়া হবে।</li>
+                        <li>সকল ক্ষেত্রে উত্তোলনের প্রসেসিং আবেদনের ৭ থেকে ১৫ দিনের মধ্যে সম্পন্ন করা হবে।</li>
+                        <li>বিনিয়োগকারীর এমআরপি ফাউন্ডেশনের কোনো প্রকার লোন থাকলে শেয়ার বিনিয়োগ অথবা সঞ্চয়ের টাকা সমন্বয় করা যাবে না। মেয়াদ পূর্তির পূর্বে সমন্বয় করার জন্য আবেদন করলে সার্ভিস চার্জ কর্তন করে সমন্বয় করা যেতে পারে।</li>
+                        <li>শর্ট টাইম বিনিয়োগের ক্ষেত্রে ৩ মাস / ৬ মাসের আগে বিনিয়োগের টাকা উত্তোলন করা যাবে না।</li>
+                    </ol>
+                </div>
+
                 <div class="registration-grid" style="margin-top: 2rem;">
                     <div class="signature-container reveal-text delay-200" style="margin-bottom: 0;">
                         <label class="form-label">গ্রাহকের ডিজিটাল স্বাক্ষর <span style="color: red;">*</span></label>
@@ -267,7 +280,7 @@
                             <label class="checkbox-wrapper reveal-text delay-200" style="margin-top: 0; align-items: flex-start;">
                                 <input type="checkbox" id="consent" required>
                                 <span class="custom-check" style="width: 20px; height: 20px;"></span>
-                                <span class="label-text" style="font-size: 0.85rem; line-height: 1.4;">আমি ঘোষণা করছি যে উপরের সকল তথ্য সঠিক এবং আমি শর্তাবলী মেনে চলছি।</span>
+                                <span class="label-text" style="font-size: 0.85rem; line-height: 1.4;">আমি ঘোষণা করছি যে উপরের সকল তথ্য সঠিক এবং আমি উপরের টার্মস এন্ড কন্ডিশন পড়েছি ও মেনে নিচ্ছি।</span>
                             </label>
                             <div class="error-message" id="consentError" style="margin-top: 0;">দয়া করে সম্মতি দিন।</div>
                         </div>

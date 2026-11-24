@@ -1360,3 +1360,25 @@ img {
     padding: 0.6rem 1rem;
   }
 }
+
+.si-terms {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid var(--primary-color);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.si-terms ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.si-terms li {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #374151;
+}
