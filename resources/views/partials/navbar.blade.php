@@ -39,10 +39,11 @@
             <li class="nav-item">
                 <a href="{{ route('agent-requirements') }}" class="nav-link">যোগ্যতা সমূহ</a>
             </li>
-            <li class="nav-item" style="display: flex; gap: 16px; align-items: center; margin-left: 0.5rem;">
-                <a href="{{ route('become-agent') }}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem">এজেন্ট হোন</a>
-                <a href="{{ route('become-member') }}" class="btn btn-secondary-white active" style="padding: 0.5rem 1rem; font-size: 0.9rem">সদস্য হোন</a>
-                <a href="{{ route('become-sub-agent') }}" class="btn btn-primary btn-sub-agent" style="padding: 0.5rem 1rem; font-size: 0.9rem;">সাব এজেন্ট</a>
+            <li class="nav-item nav-actions">
+                <a href="{{ route('become-agent') }}" class="btn btn-primary">এজেন্ট হোন</a>
+                <a href="{{ route('become-member') }}" class="btn btn-secondary-white active">সদস্য হোন</a>
+                <a href="{{ route('become-sub-agent') }}" class="btn btn-primary btn-sub-agent">সাব এজেন্ট</a>
+                <a href="{{ route('share-investment') }}" class="btn btn-secondary-white">শেয়ার বিনিয়োগ</a>
             </li>
         </ul>
         <div class="hamburger">

@@ -61,3 +61,7 @@ Route::get('/become-member', function () {
 Route::get('/become-sub-agent', function () {
     return view('become-sub-agent');
 })->name('become-sub-agent');
+
+Route::get('/share-investment', function () {
+    return view('share-investment');
+})->name('share-investment');

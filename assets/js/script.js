@@ -867,6 +867,167 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Share Investment Form Submission
+    const shareInvestmentForm = document.getElementById('shareInvestmentForm');
+    if (shareInvestmentForm) {
+        initSignaturePad('signaturePad', 'signatureInput', 'clearSignature');
+
+        const dateField = document.getElementById('siApplicationDate');
+        if (dateField) dateField.value = new Date().toLocaleDateString('bn-BD');
+
+        // Photo previews (customer + nominee)
+        shareInvestmentForm.querySelectorAll('.si-photo-input').forEach(input => {
+            input.addEventListener('change', function () {
+                const wrapper = this.closest('.photo-upload-wrapper');
+                const img = wrapper.querySelector('img');
+                const placeholder = wrapper.querySelector('.upload-placeholder');
+                const file = this.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    img.src = ev.target.result;
+                    img.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+                wrapper.querySelector('.error-message').style.display = 'none';
+            });
+        });
+
+        const showError = (msg) => {
+            const errorModal = document.getElementById('errorModal');
+            const box = document.getElementById('errorDetails');
+            if (errorModal && box) {
+                box.innerText = msg;
+                errorModal.classList.add('active');
+            } else {
+                alert('ত্রুটিঃ\n' + msg);
+            }
+        };
+
+        shareInvestmentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const canvas = document.getElementById('signaturePad');
+            const signatureInput = document.getElementById('signatureInput');
+            const submitBtn = shareInvestmentForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+
+            let isValid = true;
+            let firstErrorField = null;
+            const flag = (el) => { isValid = false; if (!firstErrorField) firstErrorField = el; };
+
+            // Text / number fields
+            shareInvestmentForm.querySelectorAll('.form-control[required]').forEach(field => {
+                const errorMsg = field.parentElement.querySelector('.error-message');
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    if (errorMsg) errorMsg.style.display = 'block';
+                    flag(field);
+                } else {
+                    field.classList.remove('error');
+                    if (errorMsg) errorMsg.style.display = 'none';
+                }
+            });
+
+            // Photos
+            shareInvestmentForm.querySelectorAll('.si-photo-input').forEach(input => {
+                const wrapper = input.closest('.photo-upload-wrapper');
+                const errorMsg = wrapper.querySelector('.error-message');
+                if (input.files.length === 0) {
+                    errorMsg.style.display = 'block';
+                    flag(wrapper);
+                } else {
+                    errorMsg.style.display = 'none';
+                }
+            });
+
+            // Category
+            const categoryError = document.getElementById('siCategoryError');
+            if (!shareInvestmentForm.querySelector('input[name="investment_category"]:checked')) {
+                categoryError.style.display = 'block';
+                flag(categoryError);
+            } else {
+                categoryError.style.display = 'none';
+            }
+
+            // Signature
+            const sigError = document.getElementById('signatureError');
+            if (!signatureInput.value) {
+                canvas.closest('.signature-pad-wrapper').style.borderColor = 'var(--error)';
+                sigError.style.display = 'block';
+                flag(canvas);
+            } else {
+                sigError.style.display = 'none';
+            }
+
+            // Consent
+            const consent = document.getElementById('consent');
+            const consentError = document.getElementById('consentError');
+            if (!consent.checked) {
+                consentError.style.display = 'block';
+                flag(consent);
+            } else {
+                consentError.style.display = 'none';
+            }
+
+            if (!isValid) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+
+                const formData = new FormData(shareInvestmentForm);
+                const blob = await (await fetch(signatureInput.value)).blob();
+                formData.delete('digital_sign');
+                formData.append('digital_sign', blob, 'signature.png');
+
+                const response = await fetch(`${API_BASE_URL}/share-investment`, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    body: formData
+                });
+                const result = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    const appNo = document.getElementById('siApplicationNo');
+                    if (appNo && result.data && result.data.application_no) {
+                        appNo.textContent = 'আবেদন নং: ' + result.data.application_no;
+                    }
+                    document.getElementById('successModal').classList.add('active');
+                    shareInvestmentForm.reset();
+                    if (dateField) dateField.value = new Date().toLocaleDateString('bn-BD');
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    signatureInput.value = '';
+                    shareInvestmentForm.querySelectorAll('.si-photo').forEach(w => {
+                        w.querySelector('img').style.display = 'none';
+                        w.querySelector('.upload-placeholder').style.display = 'flex';
+                    });
+                } else {
+                    let errorMsg = result.message || 'সার্ভার ভ্যালিডেশন এরর।';
+                    if (result.errors) {
+                        errorMsg = Object.entries(result.errors)
+                            .map(([field, msgs]) => `[${field}] : ${msgs.join(', ')}`)
+                            .join('\n');
+                    }
+                    showError(errorMsg);
+                }
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+        shareInvestmentForm.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', () => input.classList.remove('error'));
+        });
+    }
+
     // Contact Form Submission
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {

@@ -50,6 +50,7 @@
                     <li><a href="{{ route('contact') }}"><i class="fas fa-angle-right"></i> যোগাযোগ</a></li>
                     <li><a href="{{ route('become-member') }}"><i class="fas fa-angle-right"></i> সদস্য আবেদন</a></li>
                     <li><a href="{{ route('become-agent') }}"><i class="fas fa-angle-right"></i> এজেন্ট আবেদন</a></li>
+                    <li><a href="{{ route('share-investment') }}"><i class="fas fa-angle-right"></i> শেয়ার বিনিয়োগ আবেদন</a></li>
                     <li><a href="{{ route('career') }}"><i class="fas fa-angle-right"></i> ক্যারিয়ার</a></li>
                 </ul>
             </div>

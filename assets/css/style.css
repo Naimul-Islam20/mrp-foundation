@@ -159,7 +159,7 @@ img {
 }
 
 .logo img {
-  height: 55px;
+  height: 48px;
   width: auto;
   /* Filter to match brand color #469946 */
   filter: invert(49%) sepia(21%) saturate(1008%) hue-rotate(69deg) brightness(94%) contrast(85%);
@@ -167,14 +167,15 @@ img {
 
 .nav-menu {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   align-items: center;
 }
 
 .nav-link {
   font-weight: 500;
   color: var(--text-dark);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
+  white-space: nowrap;
 }
 
 .nav-link:hover, .nav-link.active {
@@ -215,7 +216,7 @@ img {
   color: var(--text-dark);
   font-weight: 500;
   transition: all 0.2s ease;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   border-bottom: 1px solid rgba(0,0,0,0.03);
 }
 
@@ -1251,3 +1252,111 @@ img {
     border-color: #ef4444;
 }
 
+
+/* Share Investment Form */
+.si-photos {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.si-photo input[type="file"] {
+  display: none;
+}
+
+.si-photo .upload-placeholder span {
+  text-align: center;
+}
+
+.si-sub-header {
+  font-size: 1rem;
+  color: var(--primary-color);
+  margin: 1rem 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.si-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.si-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.si-radio:hover,
+.si-radio:has(input:checked) {
+  border-color: var(--secondary-color);
+  background: #f0fdf4;
+}
+
+.si-radio input {
+  accent-color: var(--primary-color);
+  width: 16px;
+  height: 16px;
+}
+
+/* Navbar action buttons (এজেন্ট / সদস্য / সাব এজেন্ট / শেয়ার বিনিয়োগ) */
+.nav-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 0.25rem;
+}
+
+.nav-actions .btn {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+/* Medium screens: tighten the desktop menu so all items fit in one row */
+@media (min-width: 769px) and (max-width: 1280px) {
+  .nav-menu {
+    gap: 0.7rem;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+  }
+
+  .logo img {
+    height: 42px;
+  }
+
+  .nav-actions {
+    gap: 6px;
+  }
+
+  .nav-actions .btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-actions {
+    flex-direction: column;
+    padding: 0 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+  }
+
+  .nav-actions .btn {
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+  }
+}
